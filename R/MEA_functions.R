@@ -30,7 +30,7 @@ remove.spikes <- function(s, ids) {
   	end <- s$rec.time[2]
   	corr.breaks <- 0         #TODO: hardcoded for axion!
   	layout <- s$layout
-  	filename <- paste0(s$file, ".edited")
+  	filename <- s$file#paste0(s$file, ".edited")
   	s2 <- construct.s(s$spikes, ids, s$rates$time.interval, beg, end,
                     corr.breaks, layout, filename)
   	s2
@@ -67,7 +67,9 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
   
   	plate.chem.info<-list()
   	count=1;
+    matchedFileName = 0;
   	for (i in which(shortFileName==masterCD$filename) ){
+  	  matchedFileName = 1;
     		#get all info from chem list
     		plate.chem.info$well[count]<-paste(masterCD$Well[i])
     		plate.chem.info$treatment[count]<-paste(masterCD$Treatment[i])
@@ -77,7 +79,10 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
     		count=count+1
     
   	}#end of for loop through masterCD$file
-  
+    if (matchedFileName == 0){
+      print(paste("File ",shortFileName," was not found in the possible file names 
+                  constructed from exp log file:",unique(masterCD$filename),sep=""))
+    }
   	if (!is.element(length(plate.chem.info$well),c(12,48)) ){
     		print(paste("Info exists for ",length(plate.chem.info$well),
                 " wells; Some wells have no data.", sep=""))

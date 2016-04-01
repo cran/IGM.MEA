@@ -31,8 +31,8 @@ IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5,
   
   write(paste("->->-> Analysing ", s$file, sep=""), file=logFile, append = TRUE)
   
-  print(paste("Arguments: minVals=", minVals, "; xlimit=", xlimit, "; binsInSec=",
-              binsInSec, ";perWell=", perWell, "; duration=", duration, "; feature='", feature, "'; filterValuesByMin=", filterValuesByMin, "; minValues=", minValues, sep=""))#
+  cat(paste("Arguments: minVals=", minVals, "; xlimit=", xlimit, "; binsInSec=",
+              binsInSec, ";perWell=", perWell, "; duration=", duration, "; feature='", feature, "'; filterValuesByMin=", filterValuesByMin, "; minValues=", minValues,"\n",sep=""))#
   
   treatments <- unique(s$treatment)
   for (tr in 1:length(treatments)){

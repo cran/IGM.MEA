@@ -110,6 +110,17 @@
 .NB.Get.Burst.Stats.Intensities <- function(well.data,f,timespan,bin.time,min_electrodes) {
   n <- length(f)
   stat <- matrix(-1,11,n)
+  rownames(stat) <- c("mean.network.burst.time.per.second",
+                      "number.of.spikes.in.network.bursts",
+                      "percentage.of.spikes.in.network.bursts",
+                      "spike.intensity",
+                      "spike.intensity.by.electrodes",
+                      "number.of.spikes.in.network.bursts",
+                      "number.of.spikes.per.network.burst",
+                      "mean.spikes.per.active.electrode.in.network.burest",
+                      "mean.spikes.per.active.electrode.in.network.burest.per.second",
+                      "mean.spikes.per.well.in.network.burest",
+                      "total.number.of.network.bursts")
   colnames(stat) <- rep("NA",n)
   for (current in 1:n) {
     if (length(f[[current]] > 0)) { #not all have names
@@ -215,7 +226,7 @@
   result
 }
 
-.NB.Merge.Result <- function(s,result) {
+.NB.Merge.Result <- function(s,result,Sigma) {
   Wells <- character()
   DIVs <- character()
   Phenotypes <- character()
@@ -237,7 +248,15 @@
     Data <- rbind(Data,data)
   }
   
+  
+  feature.names <- character()
+  for (i in 1:length(Sigma)) {
+    feature.names <- c(feature.names,paste(rownames(current$data[[1]]$stat1), Sigma[i], sep = "_"))
+  }
+  feature.names <- c(feature.names, colnames(current$data[[1]]$stat0))
+  
   df = data.frame(DIVs, Wells, Phenotypes,Data)
+  names(df)[4:dim(df)[2]] <- feature.names
   df
 }
 
@@ -311,7 +330,7 @@ calculate.network.bursts <- function(s,Sigma,min_electrodes,local_region_min_nAE
     for (i in 1:length(s)) {
       result[[i]] <- .NB.Extract.Fetures(s[[i]], Sigma, min_electrodes, local_region_min_nAE) 
     }
-    R <- .NB.Merge.Result(s,result)
+    R <- .NB.Merge.Result(s,result,Sigma)
   }
   R
 }

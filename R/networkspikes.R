@@ -173,8 +173,9 @@ IGM.plot.ns <- function(ns, ...) {
   ## end of the recording.  naughty!
 
   if (is.null(p)) {
-    if (is.null(ns$measures)) {
-      cat("*** No network spikes found\n")
+   if (is.null(ns$measures)) {
+     # No ns found in this well
+#      cat("*** No network spikes found\n")
       return (NULL)
     } else {
       ## use info previously stored in measures.

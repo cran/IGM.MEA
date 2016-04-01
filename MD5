@@ -1,8 +1,8 @@
-01c47e9597011065333d4fd6dd9f8b40 *DESCRIPTION
-3c56f660363676a8599b21a54d1830de *NAMESPACE
-ab09e243d20077328c58ae1090fab6c3 *R/MEA_functions.R
-67c1102302e5c3213b3f8ba372e07a35 *R/NetworkBurst_functions.R
-327097a43ecd20c85110e780c9c558fb *R/aggregate_data.R
+a9bd365f39767e41dd48d767f907fc97 *DESCRIPTION
+e1532825f8fa81d6f38eb226b85f46a4 *NAMESPACE
+759182dce900244507c6cb56cbb99d75 *R/MEA_functions.R
+db7fd69fadf3151e05796fb55b50adc4 *R/NetworkBurst_functions.R
+465494fb0399cb7bcf0853187efe1d52 *R/aggregate_data.R
 5e7b804fc41b8d6e286414f5358fd1d4 *R/arrays.R
 1fbdc00afacbd865681ba5f77a8c66d3 *R/axion_functions.R
 c9bb58beba518ee93e08d34b05df5145 *R/bci.R
@@ -18,11 +18,11 @@ e353e1f0ee4f9044f35920952ae802af *R/logisi.R
 08d8954d610b9a7d8ded44b41da25e84 *R/make.raster.R
 73aef7c74907c60e8ac8b0efaa734756 *R/maxinterval.R
 849d79a06a980d9ac1f54f0de7a5aa4b *R/ms_funs.R
-43961248be0469b62856d559e95193e4 *R/networkspikes.R
+31f0fdbb24dcbe6eaa379462986fe9d4 *R/networkspikes.R
 294d5c50ebbc1806c36ab74f97c30fed *R/networkspikes_functions.R
-32757ab4684281a3ef84561795fc9e1c *R/perm_plot.R
+2d87418dea2d4538197a21d94b21b363 *R/perm_plot.R
 54bb54f905beae42dfc00dab17388213 *R/plot.mm.s.R
-15d0c04bbe583fa9fff2f17e926b6296 *R/plotDistributions.R
+be3fed19a594d672ac2548962328edd6 *R/plotDistributions.R
 820db43394132baed61f9285a9fe3b19 *R/spike.simulation.R
 d9b576b4a0580e2b36830f3294ac7e92 *R/spikes.R
 639930fc0730111706d610f3eb3f5818 *R/surprise2.R
@@ -61,7 +61,7 @@ e7c06dce238edae3d815728911c28560 *man/calculate.network.bursts.Rd
 3232d113b188ad9badf9477b05a4b411 *man/calculate.network.spikes.Rd
 3b5d330829ac43b538220060453965f7 *man/chem.info.2.Rd
 b5eac1f8bb9c93ae457b0af4182214cc *man/construct.s.Rd
-7173090fbb30771bb54216bb8cb96d0d *man/filter.wells.Rd
+b3e22a925cd216a74b027e74bc723d26 *man/filter.wells.Rd
 abd12a4634b3bb840f8bf4acfd8172cc *man/get.array.info.Rd
 92bef874b7b5b6b778444b3873005014 *man/get.data.Rd
 03637c22ae7d661b1afa2c8a527d0eb8 *man/get.file.basename.Rd

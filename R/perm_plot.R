@@ -77,11 +77,15 @@
     data.p.rounded <- signif(data.p,3)
   }
   
-  perm.p <- length(which(outp<data.p)) / np
-  if(perm.p == 0){
-    perm.p = paste("<", 1/np)
+  if (data.p == "NaN"){
+    perm.p <- "NaN"
+  } else{
+    perm.p <- length(which(outp<data.p)) / np
+    if(perm.p == 0){
+      perm.p = paste("<", 1/np)
+    }
   }
-  
+
   
   #create data frame with results
   result = c(perm.p, data.p)
@@ -129,7 +133,7 @@ get.wt <- function(s){
   #                  sd = sd(value))
   melted.df = with(melted.df, {ddply(melted.df, c("treatment", "variable"), summarize, 
                     mean=mean(value),
-                    sd = sd(value))})
+                    sem = sqrt(var(value)/length(value)))})
   
   
   pd <- position_dodge(width = 0.1)
@@ -138,7 +142,7 @@ get.wt <- function(s){
   x = with(melted.df, { ggplot(melted.df, aes(x=variable, y=mean, group = treatment))+
     geom_point(aes(color=factor(treatment)), position = pd)+
     geom_line(aes(color=factor(treatment)), position = pd)+
-    geom_errorbar(aes(x=variable, y=sd, ymin = mean-sd, ymax=mean+sd, 
+    geom_errorbar(aes(x=variable, y=sem, ymin = mean-sem, ymax=mean+sem, 
                       color = factor(treatment)), width = 0.1, position = pd)+
     ggtitle(paste0("\n", title,"\n"))+
     xlab("")+
@@ -166,20 +170,23 @@ get.wt <- function(s){
   test.treatments = all.treatments[!all.treatments==wt] 
   
   #calculate mann whit p values for each combination
-  all.p.values = list()
   num.of.trts = length(test.treatments)
-  
+
+  all.p.values <- data.frame(Treatment=character(),
+                 perm.pval=character(), 
+                 original.pval=character(), 
+                 stringsAsFactors=FALSE) 
+
   if (num.of.trts==0){ all.p.values<-c(-1,-1) }
-  
   else{
     for (i in 1:num.of.trts){
       trt = test.treatments[i]
       vals = .mann.whit.perm(df, wt, trt, np)
-      trt = paste(wt, " vs. ", trt)
-      all.p.values[[trt]] = vals
+      all.p.values[i,"Treatment"]=paste(wt, " vs. ", trt)
+      all.p.values[i,"perm.pval"]= vals[,"perm.p"]
+      all.p.values[i,"original.pval"]= vals[,"data.p"]
     }}
   
-  all.p.values <- ldply(all.p.values, data.frame)
   colnames(all.p.values)[1] <- paste("Treatment/Genotype")
   
   

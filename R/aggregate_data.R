@@ -234,7 +234,7 @@ IGM.aggregate.feature.data <- function(s, feat.type,parameters=list()){
   return(all.features)
 }
 
-filter.wells <- function(unfiltered.df, nae){
+filter.wells <- function(unfiltered.df, nae,min.electrodes=4){
   # Filters out wells in which there are fewer than 4 active electrodes 
   #    at least 70% of the time
   unfiltered.df=unfiltered.df[!(is.na(unfiltered.df$treatment) | unfiltered.df$treatment==""), ]  # remove wells w/o trt
@@ -244,7 +244,8 @@ filter.wells <- function(unfiltered.df, nae){
   
   num.div <- ncol(nae)-1
   
-  inactive <- data.frame(num.inactive = rowSums(nae[, -1] < 4), total.div = num.div)
+  inactive <- data.frame(num.inactive = rowSums(nae[, -1] < min.electrodes), total.div = num.div)
+  inactive[is.na(inactive$num.inactive),"num.inactive"]=0
   inactive$fraction <- inactive$num.inactive/inactive$total.div
   inactive$well <- nae$well
   

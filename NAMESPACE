@@ -4,7 +4,7 @@ useDynLib("IGM.MEA", .registration = TRUE, .fixes = "C_")
 import("ggplot2","lattice","tcltk","emdist")
 importFrom("gtools","mixedorder")
 importFrom("reshape2","dcast","melt")
-importFrom("plyr","ldply")
+importFrom("plyr","llply","ldply","ddply")
 importFrom("gridExtra", "tableGrob","arrangeGrob","marrangeGrob")
 importFrom("grDevices", "dev.cur", "dev.off", "dev2bitmap", "pdf",
            "png", "postscript", "xy.coords")

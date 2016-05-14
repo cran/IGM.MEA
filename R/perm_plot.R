@@ -139,15 +139,23 @@ get.wt <- function(s){
   pd <- position_dodge(width = 0.1)
   title <- paste(platename, "_", feature, sep="")
   
-  x = with(melted.df, { ggplot(melted.df, aes(x=variable, y=mean, group = treatment))+
-    geom_point(aes(color=factor(treatment)), position = pd)+
-    geom_line(aes(color=factor(treatment)), position = pd)+
-    geom_errorbar(aes(x=variable, y=sem, ymin = mean-sem, ymax=mean+sem, 
-                      color = factor(treatment)), width = 0.1, position = pd)+
-    ggtitle(paste0("\n", title,"\n"))+
-    xlab("")+
-    ylab(paste0("\n", feature, "\n"))})
-  
+  # no values for feature, return empty plot
+  if (all(is.na(melted.df$mean))){
+    x = with(melted.df, { ggplot()+
+        ggtitle(paste0("\n", title,"\n"))+
+        xlab("")+
+        ylab(paste0("\n", feature, "\n"))})
+  }else{
+    x = with(melted.df, { ggplot(melted.df, aes(x=variable, y=mean, group = treatment))+
+        geom_point(aes(color=factor(treatment)), position = pd)+
+        geom_line(aes(color=factor(treatment)), position = pd)+
+        geom_errorbar(aes(x=variable, y=sem, ymin = mean-sem, ymax=mean+sem, 
+                          color = factor(treatment)), width = 0.1, position = pd)+
+        ggtitle(paste0("\n", title,"\n"))+
+        xlab("")+
+        ylab(paste0("\n", feature, "\n"))})
+  }
+
   x+labs(color="Treatment")
   
   return(x)
@@ -177,8 +185,7 @@ get.wt <- function(s){
                  original.pval=character(), 
                  stringsAsFactors=FALSE) 
 
-  if (num.of.trts==0){ all.p.values<-c(-1,-1) }
-  else{
+  if (num.of.trts==0){ all.p.values<-c(-1,-1) }else{
     for (i in 1:num.of.trts){
       trt = test.treatments[i]
       vals = .mann.whit.perm(df, wt, trt, np)

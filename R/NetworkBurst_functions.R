@@ -257,6 +257,11 @@
   
   df = data.frame(DIVs, Wells, Phenotypes,Data)
   names(df)[4:dim(df)[2]] <- feature.names
+  
+  #sort by DIVs
+  divs <- sapply(df["DIVs"], as.character)
+  df <- df[mixedorder(divs),] 
+  
   df
 }
 
@@ -279,7 +284,7 @@ NB.matrix.to.feature.dfs <- function(data) {
     for (i in 1:n) {
       data.matrix[data[i,'Wells'],data[i,'DIVs']] <- data[i,index + 3]
     }
-    dfs[[index]] <- cbind(Wells,data.matrix)
+    dfs[[index]] <- .sort.df(cbind(Wells,data.matrix))
   }
   names(dfs) <- colnames(data)[4:(n.features+3)]
   dfs

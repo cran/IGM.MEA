@@ -109,7 +109,14 @@
     
     divs.df[[div]] = df
   }
-  
+
+  for (name in names(divs.df)){
+    # If no data for DIV - remove the DIV
+    if (length(divs.df[[name]]) == 0) {
+      divs.df[[name]]<-NULL
+    }
+  }
+
   divs.df <- do.call(rbind, lapply(names(divs.df), function(x) cbind(div = x, divs.df[[x]])))
 
   return(divs.df)

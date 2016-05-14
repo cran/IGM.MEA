@@ -8,13 +8,7 @@ make.raster<-function(RobjectFile=NULL,
                       show.bursts=F, 
                       show.burst.number=F, 
                       show.networkspikes=F,
-                      show.ns.number=F ){
-  
-  #data("parameters")
-  # development
-  # well.for.raster=NULL; RobjectFile=NULL; outputdir=NULL
-  # show.ns.number=F; show.networkspikes=F; show.burst.number=F;
-  # show.bursts=F; interval.for.raster=NULL; 
+                      show.ns.number=F){
   
   
   # user input
@@ -80,18 +74,13 @@ make.raster<-function(RobjectFile=NULL,
 
       # +++++++++++++++++++++well.for.raster
       if ( !exists("well.for.raster") || is.null( well.for.raster ) ){
-        well.for.raster = unique(s[[1]]$cw)[1]
+        return("Well has no data, please select another well")
       }
       well.for.raster<-toupper(well.for.raster) #ensure user entered upper case well names
       # check if its among available channels
       if ( !is.element( well.for.raster, unique(s[[1]]$cw) ) ){
         
-        print(c("Improper 'well.for.raster' parameter specification.",
-                "Specify a well begining with A-F and ending with 1-8",
-                "for example well.for.raster<-'A4' ",
-                "Specified well may not appear in recording") )
-        well.for.raster = unique(s[[1]]$cw)[1]
-        print(paste( "Using well ", well.for.raster,sep="")  )
+        return("Well has no data, please select another well")
         
       }
       
@@ -231,7 +220,23 @@ make.raster<-function(RobjectFile=NULL,
       
       
       ####plot interesting responses for all files
-      RasterPlotPath = paste(analysis$output.dir, "/rasterPlots.pdf", sep="" )
+      RasterPlotPathTemp1 = paste0(analysis$output.dir, "/rasterPlot_",
+                                   interval.for.raster[1], "_",interval.for.raster[2],"_",
+                                   well.for.raster)
+      if (show.bursts ){
+        RasterPlotPathTemp1<-paste0(RasterPlotPathTemp1, "_b")
+      } 
+      if (show.burst.number ){
+        RasterPlotPathTemp1<-paste0(RasterPlotPathTemp1, "_bn")
+      } 
+      if (show.networkspikes ){
+        RasterPlotPathTemp1<-paste0(RasterPlotPathTemp1, "_ns")
+      }
+      if (show.ns.number ){
+        RasterPlotPathTemp1<-paste0(RasterPlotPathTemp1, "_nsN")
+      }
+                             
+      RasterPlotPath<-paste0(RasterPlotPathTemp1,".pdf" )
       pdf(file= RasterPlotPath ) 
       
       

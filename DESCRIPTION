@@ -1,8 +1,8 @@
 Package: IGM.MEA
 Type: Package
 Title: IGM MEA Analysis
-Version: 0.3.1
-Date: 2016-04-01
+Version: 0.3.2
+Date: 2016-05-11
 Author: Quanli Wang, Sahar Gelfman, Diana Hall, Ryan Dhindsa
 Maintainer: Sahar Gelfman <sg3261@columbia.edu>
 Description: Software tools for the characterization of neuronal networks as recorded on multi-electrode arrays.
@@ -11,6 +11,6 @@ Imports: lattice,tcltk,emdist,ggplot2 (>= 2.0.0),
         gridExtra,reshape2,plyr, gtools
 License: GPL (>= 3)
 NeedsCompilation: yes
-Packaged: 2016-04-01 18:24:40 UTC; sg3261
+Packaged: 2016-05-12 20:02:59 UTC; sg3261
 Repository: CRAN
-Date/Publication: 2016-04-01 22:47:24
+Date/Publication: 2016-05-14 00:01:47

@@ -20,6 +20,9 @@ IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5,
 # Output:
 #   Plots the burst distributions.
 #   Writes a burst distribution csv to be used for permutation test and plotting
+
+  outputdir<-paste0( outputdir , "/distributionFiles" ) 
+  suppressWarnings(  dir.create(outputdir) )
   
   basename <- get.file.basename(s$file)
   logFile <- paste(outputdir, "/", get.project.plate.name(s$file), 

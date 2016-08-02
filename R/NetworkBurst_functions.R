@@ -271,7 +271,7 @@ NB.matrix.to.feature.dfs <- function(data) {
   data[,'Wells'] <- factor(data[,'Wells']) #drop unused levels
   Well.stat <- table(data[,'Wells'])
   
-  ref.matrix <- matrix(NA,length(Well.stat),max(Well.stat))
+  ref.matrix <- matrix(NA,length(Well.stat), length(unique(data[,1]) ) )
   Wells <- unique(data[,c('Wells','Phenotypes')])
   rownames(ref.matrix) <- Wells[,'Wells']
   colnames(ref.matrix) <- unique(data[,1])

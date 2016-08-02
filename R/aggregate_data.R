@@ -220,19 +220,27 @@ IGM.aggregate.feature.data <- function(s, feat.type,parameters=list()){
     divs.df = .write.burst.summary(s)
   }
   
-
-  # create list of dataframes (one dataframe per feature)
-  feature.names <- colnames(divs.df)
-  remove <- c("div", "treatment", "well")
-  feature.names <- setdiff(feature.names, remove)
   
   all.features = list()
   
-  #test
-  for (i in 1:length(feature.names)) {
-    df = .create.feat.df(s, divs.df, feature.names[i], all.features)
+  if(!is.null(divs.df)){
+    # create list of dataframes (one dataframe per feature)
+    feature.names <- colnames(divs.df)
+    remove <- c("div", "treatment", "well")
+    feature.names <- setdiff(feature.names, remove)
     
-    all.features[[feature.names[i]]] = df}
+    
+    
+    #test
+
+    for (i in 1:length(feature.names)) {
+      df = .create.feat.df(s, divs.df, feature.names[i], all.features)
+      
+      all.features[[feature.names[i]]] = df}
+  } else {
+    all.features=NULL
+  }
+
 #   all.features = sapply(feature.names, function(x) .create.feat.df(divs.df, x, all.features), 
 #                         USE.NAMES = FALSE)
   
@@ -260,10 +268,13 @@ filter.wells <- function(unfiltered.df, nae,min.electrodes=4){
   
   filtered.df = unfiltered.df[unfiltered.df$well %in% active.wells$well, ]
   
-  #replace na's with 0's
-  filtered.df[filtered.df == "NaN"] = NA  # first replace NaN with NA
-  filtered.df[is.na(filtered.df)] <- 0    # then replace NA's with 0
-  
+  if (nrow(filtered.df)!=0)
+  {
+    #replace na's with 0's
+    filtered.df[filtered.df == "NaN"] = NA  # first replace NaN with NA
+    filtered.df[is.na(filtered.df)] <- 0    # then replace NA's with 0
+  }
+
   return(filtered.df)
 }
 

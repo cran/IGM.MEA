@@ -192,15 +192,13 @@ get.wt <- function(s){
       all.p.values[i,"Treatment"]=paste(wt, " vs. ", trt)
       all.p.values[i,"perm.pval"]= vals[,"perm.p"]
       all.p.values[i,"original.pval"]= vals[,"data.p"]
+      colnames(all.p.values)[1] <- paste("Treatment/Genotype")
     }}
-  
-  colnames(all.p.values)[1] <- paste("Treatment/Genotype")
-  
-  
-  p.value.table = tableGrob(all.p.values)
+
+  p.value.table = gridExtra::tableGrob(all.p.values)
   feature.plot = .plot.feature(df, feature, platename)
   
-  table.and.plot <- arrangeGrob(feature.plot, p.value.table, nrow=2)
+  table.and.plot <- gridExtra::arrangeGrob(feature.plot, p.value.table, nrow=2)
   return(table.and.plot)
 }
 
@@ -225,6 +223,11 @@ write.pdf <- function(s, wt, np, features.list, type, output.dir){
   fname <- paste(platename, "_", type, "_", "analysis", ".pdf", sep='')
   fpath <- paste(out.folder, "/",fname, sep='')
   
+  if ((nrow(features.list[[1]])==0)  )
+  {
+    # empty wells
+    return
+  }
   if (length(unique(na.omit(features.list[[1]]$treatment)))==0){
     # No treatments
     return
@@ -238,7 +241,7 @@ write.pdf <- function(s, wt, np, features.list, type, output.dir){
   }
   
   
-  all.plots = marrangeGrob(x, nrow=1, ncol=1)
+  all.plots = gridExtra::marrangeGrob(x, nrow=1, ncol=1)
   
   # create pdf
   ggsave(fpath, all.plots, width = 8.5, height = 11, units = "in")

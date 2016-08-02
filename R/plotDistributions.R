@@ -38,11 +38,8 @@ IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5,
               binsInSec, ";perWell=", perWell, "; duration=", duration, "; feature='", feature, "'; filterValuesByMin=", filterValuesByMin, "; minValues=", minValues,"\n",sep=""))#
   
   treatments <- unique(s$treatment)
-  for (tr in 1:length(treatments)){
-    if (nchar(treatments[tr])==0){
-      treatments <- treatments[-tr]
-      next}}
-  
+  treatments<-treatments[!nchar(treatments)==0]
+
   fVals <- NULL
   if (feature == "IBI") {
     fVals <- .calc.all.ibi(s, s$allb)
@@ -306,7 +303,7 @@ IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5,
       first <- 0
     }else{
       gmeansTable <- rbind(gmeansTable, data.frame(treat=t, data=gmeans))
-      points(data[1:ceiling(xlimit * jump)]~pos[1:ceiling(xlimit * jump)], type = "l", col = colors[tr], lwd=4)}}
+      points(data[1:ceiling(xlimit * jump)]~pos[1:ceiling(xlimit * jump)], type = "l", col = colors[tr], lwd=4) }}
   # print legend for all genotypes and treatments
   legend(xlimit * 0.6, ylimit * 0.8, legend=c(goodTreatments), lty=1, lwd=5, col=colors, bg="white", cex=0.9, y.intersp=0.7)  
   # print values of all ks tests

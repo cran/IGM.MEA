@@ -1,6 +1,7 @@
 IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5, 
                                feature="non", filterValuesByMin=0, minValues=0,
-                               perWell=0, outputdir=getwd()){
+                               perWell=0, outputdir=getwd(), min.electrodes=4,
+                               timeStamp="DATE_TIME"){
 # Plot distributions of selected bursting features and print csv output for stats
 #
 # Args:
@@ -123,8 +124,8 @@ IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5,
       next}
     
     # Check number of aE
-    if (CperWell$newCount[CperWell$well==well] <= 3){
-      write (paste("Skipped well- ", well, " less than 4 electrodes", sep=""), file=logFile, append = TRUE)
+    if (CperWell$newCount[CperWell$well==well] < min.electrodes){
+      write (paste("Skipped well- ", well, " less than ",min.electrodes," electrodes", sep=""), file=logFile, append = TRUE)
       next}else{
         data <- fVals[[j]]
       }
@@ -164,9 +165,9 @@ IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5,
             # save old well if there are electrodes to show
             if (cNum != 0){
               valid <- 1
-              if (cNum > 3)
+              if (cNum >= min.electrodes)
               {
-                # calculate average values per electrodes if more than 1
+                # calculate average values per electrodes if more than minimum electrodes
                 rmeans <- apply(wellData[, 1:cNum], 1, mean)}else{
                   write (paste("Less than four electrodes passed filters for ", old, ", it will be removed from the analysis."), file=logFile, append = TRUE)
                   valid <- 0
@@ -327,7 +328,7 @@ IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5,
         line <- line + 1}}}
   # write all distributions for a permutation test
   tablePath <- paste(outputdir, "/", basename, "_", feature, "_distributions.csv", sep="")
-  csvwell <- paste(outputdir, "/", get.project.plate.name(s$file), "_", feature, "_distributions.csv", sep="")
+  csvwell <- paste(outputdir, "/", get.project.plate.name(s$file), "_",timeStamp,"_", feature, "_distributions.csv", sep="")
   #  write.table(  Alldistributions, file=tablePath, sep=",", append = F, col.names=F, row.names=F )
   write.table( Alldistributions, file=csvwell, sep=",", append = T, col.names=F, row.names=F )
 }

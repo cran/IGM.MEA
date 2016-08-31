@@ -178,8 +178,19 @@
   x = data.frame(df$div, df$well, df$treatment, df[,feature])
   colnames(x) = c("div", "well", "treatment", feature)
   y <- dcast(x, well~div, value.var=feature)
-  tempy=cbind(treatment=df[!duplicated(df$well),"treatment"],y[c(-1)])
-  y<-cbind(well=y$well,tempy)
+  wellToTrt=x[!duplicated(x$well),c("well","treatment")]
+  # reorder in case early wells show up in later DIVs
+  wellToTrt=wellToTrt[order(as.character(wellToTrt$well)),]
+  
+
+  ymerged=merge(x = y, y = wellToTrt, by=c("well"), all.x = TRUE)
+  ymerged=ymerged[order(as.character(ymerged$well)),]
+  y <- ymerged[c(1,dim(ymerged)[2],2:(dim(ymerged)[2]-1))]
+  
+
+#  tempy=cbind(treatment=df[!duplicated(df$well),"treatment"],y[c(-1)])
+#  y<-cbind(well=y$well,tempy)
+#  y = y[,c(1,ncol(y), 2:lastdiv)]  # move treatment column from last to second column
   
 #   lastdiv = ncol(y) - 1
 #   y = y[,c(1,ncol(y), 2:lastdiv)]  # move treatment column from last to second column
@@ -249,7 +260,7 @@ IGM.aggregate.feature.data <- function(s, feat.type,parameters=list()){
   return(all.features)
 }
 
-filter.wells <- function(unfiltered.df, nae,min.electrodes=4){
+filter.wells <- function(unfiltered.df, nae, min.electrodes = 4, well.filter.maximum.DIV.inactive.ratio = 0.5){
   # Filters out wells in which there are fewer than 4 active electrodes 
   #    at least 70% of the time
   unfiltered.df=unfiltered.df[!(is.na(unfiltered.df$treatment) | unfiltered.df$treatment==""), ]  # remove wells w/o trt
@@ -264,7 +275,8 @@ filter.wells <- function(unfiltered.df, nae,min.electrodes=4){
   inactive$fraction <- inactive$num.inactive/inactive$total.div
   inactive$well <- nae$well
   
-  active.wells <- with(inactive, {subset.data.frame(inactive, fraction < 0.7, select = well)})
+  # grab only wells with inactive ratio < well.filter.maximum.DIV.inactive.ratio
+  active.wells <- with(inactive, {subset.data.frame(inactive, fraction < well.filter.maximum.DIV.inactive.ratio, select = well)})
   
   filtered.df = unfiltered.df[unfiltered.df$well %in% active.wells$well, ]
   

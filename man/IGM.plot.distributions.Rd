@@ -5,7 +5,8 @@
 The function calculates normalized distributions of selected bursting features and plots distribution graphs of all treatments in a recording. The function also prints csv output in the /Analysis directory for downstream stats such as permutation test of treatment labels}
 \usage{
 IGM.plot.distributions(s, minVals = 1, xlimit = 25, binsInSec = 5, 
-feature = "non", filterValuesByMin = 0, minValues = 0, perWell = 0, outputdir = getwd())
+feature = "non", filterValuesByMin = 0, minValues = 0, perWell = 0, outputdir = getwd(),
+min.electrodes=4, timeStamp="DATE_TIME")
 }
 \arguments{
   \item{s}{
@@ -16,7 +17,7 @@ minimum values number per electrode, electrodes with a smaller number of values 
   \item{xlimit}{
 max limit of values, for example: xlimit = 25 for IBI analysis means that IBIs longer than 25 seconds will not be part of distribution calculations}
   \item{binsInSec}{
-how many bins to cut each of the segments. For example: IBI analysis has 25 seconds as xlimit, to analyse in a 0.1 sec resolution binsInSec should be set to 10, for 1 sec resolution set binsInsec to 1   
+how many bins to cut each of the segments. For example: IBI analysis has 25 seconds as xlimit, to analyse in a 0.1 sec resolution binsInSec should be set to 10, for 1 sec resolution set binsInsec to 1
 }
   \item{feature}{
 what feature to analyze, options are "IBI", "ISI, "nspikesInBurst", "duration", "spikesDensityInBurst"}
@@ -28,6 +29,10 @@ disregards values with lower then filterValuesByMin , only if filterValuesByMin 
 should distribution analysis be performed by testing treatment differences on well level means (1) or electrode level means(0) }
   \item{outputdir}{
 output directory}
+  \item{min.electrodes}{
+minimum electrodes for an active well}
+  \item{timeStamp}{
+time stamp for the output files}
 }
 \details{
 Plot distributions calculates normalized distributions of bursting features. 'Normalized distribution' are a way to handle biases caused by noisy electrodes/wells. The function will calculate a normalized histogram (values 0-1) of each feature for each electrode. Next, it will average histogram values either per well and then average all wells per treatment, or directly per treatment. All comparisons between treatments will be then made by plotting the normalized histograms of each treatment and running a K-S test between them. }

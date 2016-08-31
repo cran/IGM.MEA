@@ -43,13 +43,14 @@
   
   if (is.na(trt) | is.na(wt) |nrow(wt.df)==0 | nrow(trt.df)==0 | all(is.na(trt.df)) | all(is.na(wt.df))){
     #create data frame with empty results if one of the treatments is empty
-    result = c(NA, NA)
-    result.df = data.frame(result)
-    row.names(result.df) = c("perm.p", "data.p")
-    colnames(result.df) = trt
-    result.df = t(result.df)
-    return(result.df)
-  }
+#    result = c(NA, NA)
+#    result.df = data.frame(result)
+#    row.names(result.df) = c("perm.p", "data.p")
+#    colnames(result.df) = trt
+#    result.df = t(result.df)
+#    return(result.df)
+    return (data.frame(perm.p=NA,data.p=NA))
+    }
 
    #pool wt and trt data
   pool <- rbind(wt.df, trt.df)
@@ -72,11 +73,11 @@
   data.wt = as.numeric(unlist(wt.df))
   data.trt = as.numeric(unlist(trt.df))
   data.p <- wilcox.test(data.wt, data.trt)$p.value
-  data.p.rounded <- round(data.p)
-  if (data.p.rounded == 0& !is.na(data.p.rounded)){
-    data.p.rounded <- signif(data.p,3)
-  }
-  
+#  data.p.rounded <- round(data.p)
+#  if (data.p.rounded == 0& !is.na(data.p.rounded)){
+#    data.p.rounded <- signif(data.p,3)
+#  }
+
   if (data.p == "NaN"){
     perm.p <- "NaN"
   } else{
@@ -84,17 +85,19 @@
     if(perm.p == 0){
       perm.p = paste("<", 1/np)
     }
+    data.p<-signif(data.p,3)
   }
 
   
   #create data frame with results
-  result = c(perm.p, data.p)
-  result.df = data.frame(result)
-  row.names(result.df) = c("perm.p", "data.p")
+#  result = c(perm.p, data.p)
+#  result.df = data.frame(result)
+#  row.names(result.df) = c("perm.p", "data.p")
   
   #result <- list(perm.p = perm.p, data.p = data.p)
-  result.df <-t(result.df)
-  return(result.df)
+#  result.df <-t(result.df)
+#  return(result.df)
+ return(data.frame(perm.p=perm.p,data.p=data.p))
 }
 
 get.wt <- function(s){
@@ -185,17 +188,18 @@ get.wt <- function(s){
                  original.pval=character(), 
                  stringsAsFactors=FALSE) 
 
-  if (num.of.trts==0){ all.p.values<-c(-1,-1) }else{
+  if (num.of.trts==0){ all.p.values[1,]<-c(wt,-1,-1) }else{
     for (i in 1:num.of.trts){
       trt = test.treatments[i]
       vals = .mann.whit.perm(df, wt, trt, np)
       all.p.values[i,"Treatment"]=paste(wt, " vs. ", trt)
-      all.p.values[i,"perm.pval"]= vals[,"perm.p"]
+      all.p.values[i,"perm.pval"]= as.character(vals[,"perm.p"])
       all.p.values[i,"original.pval"]= vals[,"data.p"]
-      colnames(all.p.values)[1] <- paste("Treatment/Genotype")
     }}
 
-  p.value.table = gridExtra::tableGrob(all.p.values)
+  names(all.p.values)[1] <- paste("Treatment/Genotype")
+
+    p.value.table = gridExtra::tableGrob(all.p.values)
   feature.plot = .plot.feature(df, feature, platename)
   
   table.and.plot <- gridExtra::arrangeGrob(feature.plot, p.value.table, nrow=2)

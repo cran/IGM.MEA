@@ -17,7 +17,8 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  feature="IBI"; print ("Running IBI distribution analysis.")
 		  params=parameters$burst.distribution.IBI
 		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
-		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir)}
+		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
+		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
 		
 		# Perform ISI distribution analysis
 		if (parameters$burst.distribution.ISI$perform){
@@ -25,7 +26,8 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  feature="ISI"; print ("Running ISI distribution analysis.")
 		  params=parameters$burst.distribution.ISI
 		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
-		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir)}
+		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
+		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
 		
 		# Perform nSpikes distribution analysis
 		if (parameters$burst.distribution.nSpikes$perform){
@@ -33,16 +35,17 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  feature="nspikesInBurst"; print ("Running nSpikes in bursts distribution analysis.")
 		  params=parameters$burst.distribution.nSpikes
 		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
-		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir)}
-		
+		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
+		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
+  		
 		# Perform duration of bursts distribution analysis
 		if (parameters$burst.distribution.durn$perform){
 		  
 		  feature="duration"; print ("Running duration of bursts distribution analysis.")
 		  params=parameters$burst.distribution.durn
 		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
-		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir)}
-		
+		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
+		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
 		
 		# Perform duration of bursts distribution analysis
 		if (parameters$burst.distribution.spikeFreq$perform){
@@ -50,7 +53,8 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  feature="spikesDensityInBurst"; print ("Running spike density in bursts distribution analysis.")
 		  params=parameters$burst.distribution.spikeFreq
 		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
-		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir)}
+		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
+		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
 		
 		#MFR
 		p<- .plot.meanfiringrate(s[[i]], main = "Mean Firing Rate by Plate (Hz)")

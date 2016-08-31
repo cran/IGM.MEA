@@ -105,6 +105,7 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
                           c(s$size[9:12],s$size[5:8],s$size[1:4]),sep=" ")
     		names(well.names) <- paste( paste(rep(LETTERS[3:1], each = 4), rep(1:4, 3), sep = ""),
                                 treatment_size,sep='=')
+    		#names(well.names) <- paste(rep(LETTERS[3:1], each = 4), rep(1:4, 3), sep = "")
     		par.strip = list(cex = 1) 
 
   	} else {
@@ -114,7 +115,7 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
                             s$treatment[17:24],s$treatment[9:16],s$treatment[1:8]),
                           c(s$size[41:48],s$size[33:40],s$size[25:32],
                             s$size[17:24],s$size[9:16],s$size[1:8]),sep=" ")
-    		names(well.names) <- paste( paste(rep(LETTERS[3:1], each = 4), rep(1:4, 3), sep = ""),
+    		names(well.names) <- paste( paste(rep(LETTERS[6:1], each = 8), rep(1:8, 6), sep = ""),
                                 treatment_size,sep='=')
     		par.strip = list(cex = .6) 
     

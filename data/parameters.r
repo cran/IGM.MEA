@@ -7,7 +7,11 @@ perm.n = 1000, ##Might want to specify in parameters or give user option?
 
 elec.min.rate = (1/60),
 elec.max.rate = 1000,
-well.min.rate = 0,
+# minimum nAE
+well.min.rate=4,
+# The maximum DIV inactive/active ratio (below which a well will be considered active
+# for a set of DIVs)
+well.filter.maximum.DIV.inactive.ratio=0.5,
 
 #parameters for max-interval burst detection
 mi.par = list(beg.isi =    0.1,

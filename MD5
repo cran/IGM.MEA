@@ -1,4 +1,4 @@
-244802764c44e674957e9ab5e47fb564 *DESCRIPTION
+fe7efe4d2dd7dd7833679d3f57638ea2 *DESCRIPTION
 e1532825f8fa81d6f38eb226b85f46a4 *NAMESPACE
 cffed2350138c5b12b48134b22e9427f *R/MEA_functions.R
 0082c4a7ca6cec2794aa2b72b4172230 *R/NetworkBurst_functions.R
@@ -20,9 +20,9 @@ e353e1f0ee4f9044f35920952ae802af *R/logisi.R
 849d79a06a980d9ac1f54f0de7a5aa4b *R/ms_funs.R
 31f0fdbb24dcbe6eaa379462986fe9d4 *R/networkspikes.R
 294d5c50ebbc1806c36ab74f97c30fed *R/networkspikes_functions.R
-1fe9605bf596b4d5c7c2fdb0af478f2a *R/perm_plot.R
+5b90c63b293451fec94703dd7ce93474 *R/perm_plot.R
 54bb54f905beae42dfc00dab17388213 *R/plot.mm.s.R
-93bf3999ddc449a0abadd249081c585a *R/plotDistributions.R
+039df1331554e1ade9bea3827cae1233 *R/plotDistributions.R
 820db43394132baed61f9285a9fe3b19 *R/spike.simulation.R
 d9b576b4a0580e2b36830f3294ac7e92 *R/spikes.R
 639930fc0730111706d610f3eb3f5818 *R/surprise2.R

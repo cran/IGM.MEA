@@ -85,7 +85,7 @@ IGM.plot.distributions <- function(s, minVals=1, xlimit=25, binsInSec=5,
       CperWell <- rbind(CperWell, data.frame(well, newCount=length(active.electrodes)))
     }} else {
       write("No wells found!", file=logFile, append = TRUE)
-      return
+      return(1)
     }
   
   old <- ""

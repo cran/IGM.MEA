@@ -230,11 +230,11 @@ write.pdf <- function(s, wt, np, features.list, type, output.dir){
   if ((nrow(features.list[[1]])==0)  )
   {
     # empty wells
-    return
+    return(NULL)
   }
   if (length(unique(na.omit(features.list[[1]]$treatment)))==0){
     # No treatments
-    return
+    return(NULL)
   }
   
   x = list()

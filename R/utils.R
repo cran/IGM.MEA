@@ -1,5 +1,4 @@
 
-## QQQ { not optimized, need to be changed
 get.file.basename<- function(filename) {
 	tempname<-strsplit( basename(filename),".RData")[[1]][1]
 	basename<-paste( strsplit(tempname, "_")[[1]][1],strsplit(tempname, "_")[[1]][2],
@@ -13,24 +12,21 @@ get.project.plate.name<- function(file) {
                      strsplit(tempname, "_")[[1]][3],sep="_")
 	basename
 }
-## QQQ }
 
 .get.all.electrodes<- function(r) {
-	plate <- plateinfo(r$layout$array)
+	plate <- .plateinfo(r$layout$array)
 	wells <- as.matrix(sort(plate$wells))
 	result <- as.vector(apply(wells,c(1,2),function(well) {.get.electrode.layout(r,well)$electrodes}))
 	result 
 }
 
 .get.electrode.layout<-function(r,well) {
-	plateinfo <- plateinfo(r$layout$array)
+	plateinfo <- .plateinfo(r$layout$array)
 	d1 <- expand.grid(col=1:plateinfo$n.elec.c,row=1:plateinfo$n.elec.r)
 	electrodes <- sort(paste(well,"_", d1[,"row"],d1[,"col"],sep=""))
 	layout <- c(plateinfo$n.elec.r, plateinfo$n.elec.c)
 	return(list(electrodes  = electrodes, layout = layout))
 }
-
-
 
 
 IGM.write.UI.to.log<-function(files=NULL,parameterList, new.file=F ){

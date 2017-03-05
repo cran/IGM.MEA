@@ -145,11 +145,10 @@ void tiling_arr(Sfloat *spikes,
 
   /* Compute all pairwise interactions, include self. */
   /* Elements on lower diagonal are not touched, so those should remain NA. */
-  int a, b, n, count;
+  int a, b, n;
   Sfloat *sa, *sb; 		/* pointers to current spike trains  */
   int n1, n2;
-  Sfloat k1, res;
-  int debug;
+  Sfloat res;
 
   n = *pn;
 	    

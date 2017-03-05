@@ -1,21 +1,46 @@
-construct.s <- function(spikes, ids, time.interval, beg, end, corr.breaks, 
+.construct.s <- function(spikes, ids, time.interval, beg, end, corr.breaks, 
                         layout, filename) {
+
   spikes.range <- range(unlist(spikes))
-  if (!is.null(end)) {
-    spikes <- lapply(spikes, .jay.filter.for.max, max = end)
-  } else {
+
+  if (is.null(end)) {
     end <- spikes.range[2]
-  }
-  if (!is.null(beg)) {
-    spikes <- lapply(spikes, .jay.filter.for.min, min = beg)
   } else {
+    spikes <- lapply(spikes, 
+                     function(x, max) {
+                       ## Any times greater than MAX are removed.
+                       x.high <- which(x>max)
+                       if (any(x.high))
+                         x[1:x.high[1]-1]
+                       else
+                         x
+                     }, 
+                     max = end)
+    
+  }
+  
+  if (is.null(beg)) {
     beg <- spikes.range[1]
+  } else {
+    spikes <- lapply(spikes, 
+                     function(x, min) {
+                       ## Any times less than MIN are removed.
+                       x.low <- which(x<min)
+                       if (any(x.low)) 
+                         x <- x[-x.low]
+                       x
+                     }, 
+                     min = beg)
   }
   
   ## Remove any channels that have zero spikes (which can happen if
   ## the beg, end range is too narrow, or if a datafile is empty,
   ## which happens sometime for the Feller data.
-  spikes <- .remove.empty.channels(spikes)
+  empty.index <- which(sapply(spikes, length) ==0)
+  if ( any(empty.index) ) {
+    spikes <- spikes[-empty.index]
+  }
+  
   if (!is.null(ids)) {
     spikes <- .filter.channel.names(spikes, ids)
   }
@@ -28,13 +53,11 @@ construct.s <- function(spikes, ids, time.interval, beg, end, corr.breaks,
   rec.time <- c(beg, end)
   nspikes <- sapply(spikes, length)
   
-  ###################### patch
   if (length(nspikes) ==0) {
     meanfiringrate <- nspikes #empty list
   } else {
     meanfiringrate <- nspikes/(end - beg)
   }
-  ######################
   
   rates <- .make.spikes.to.frate(spikes, time.interval = time.interval, 
                                 beg = beg, end = end)
@@ -44,7 +67,7 @@ construct.s <- function(spikes, ids, time.interval, beg, end, corr.breaks,
               NCells = length(spikes), meanfiringrate = meanfiringrate, 
               file = filename, layout = layout, rates = rates, unit.offsets = unit.offsets, 
               rec.time = rec.time)
-  class(res) <- "mm.s"
+  class(res) <- "spike.list"
   if (length(corr.breaks) == 1) {
     res$corr = NULL
   }    else {
@@ -54,9 +77,7 @@ construct.s <- function(spikes, ids, time.interval, beg, end, corr.breaks,
 }
 
 
-
 calculate.isis <- function(s) {
-	
 	s$isis <- lapply(s$spikes,diff)
 	s$mean.isis <- lapply(s$isis,mean)
 	s$sd.isis <- lapply(s$isis,sd)
@@ -84,10 +105,9 @@ calculate.isis <- function(s) {
 }
 
 .spike.summary.by.well <- function(s) {
-  plate <- plateinfo(s$layout$array)
+  plate <- .plateinfo(s$layout$array)
   wells <- sort(plate$wells)
   s$isis <- lapply(s$spikes,diff)
-  # Sahar 10282014 - add genotype in 1st column to output and generic column position (startPos) to add more columns
   startPos=1
   sum <- matrix(data = NA, nrow = length(wells), ncol = startPos+8)
   colnames(sum)<- c("treatment","nAE","nspikes_by_well","meanfiringrate_by_well","meanfiringrate_by_all_ectctordes","meanfiringrate_by_active_electordes","sdfiringrate_by_active_electordes","meanisis","sdisis")
@@ -97,11 +117,7 @@ calculate.isis <- function(s) {
     for (j in 1:length(s$goodwells)){
       icurrentwell<-(s$goodwells[j]==s$cw)
       incurrentwell<-which((s$goodwells[j]==s$cw))
-      #sahar - add genotype from treatment column that is per well (if well has data), not per electrode
-      #treatment="NA"
-      # diana change because trt was showing as na when there was a trt, just no activity
-      # check that current well and treatment well match
-
+  
       treatment=s$treatment[s$goodwells[j]]
       
       if (length(incurrentwell)>0){
@@ -111,7 +127,7 @@ calculate.isis <- function(s) {
       sum[s$goodwells[j],startPos+1] <- length(incurrentwell)
       sum[s$goodwells[j],startPos+2] <- sum(s$nspikes[icurrentwell])
       sum[s$goodwells[j],startPos+3] <- sum(s$meanfiringrate[icurrentwell])
-      sum[s$goodwells[j],startPos+4] <- sum(s$meanfiringrate[icurrentwell])/ nelectrodes #Sahar - was division of string by number - ask Quanli!
+      sum[s$goodwells[j],startPos+4] <- sum(s$meanfiringrate[icurrentwell])/ nelectrodes 
       
       sum[s$goodwells[j],startPos+5] <- mean(s$meanfiringrate[icurrentwell])
       sum[s$goodwells[j],startPos+6] <- sd(s$meanfiringrate[icurrentwell])
@@ -123,8 +139,6 @@ calculate.isis <- function(s) {
   }
   sum
 }
-
-
 
 .get.div<-function (s) {
   div <- NA
@@ -140,7 +154,7 @@ calculate.isis <- function(s) {
   div
 }
 
-IGM.mean.firingrate.by.well <- function(s) {
+IGM.compute.mean.firingrate.by.well <- function(s) {
 	df1 <- aggregate(s$meanfiringrate, by = list(s$cw),FUN = mean,na.rm = T)
 	df2 <- aggregate(s$meanfiringrate, by = list(s$cw),FUN = sum,na.rm = T)
 
@@ -163,7 +177,7 @@ IGM.mean.firingrate.by.well <- function(s) {
 				}
 				df = do.call("rbind",df)
 				colnames(df) <- c("isis","electrode")
-				plateinfo <- plateinfo(s$layout$array)
+				plateinfo <- .plateinfo(s$layout$array)
 				d1 <- expand.grid(col=1:plateinfo$n.elec.c,row=1:plateinfo$n.elec.r)
 				all.electrodes <- sort(paste(well,"_", d1[,"row"],d1[,"col"],sep=""))
 				layout.electrodes <- c(plateinfo$n.elec.r, plateinfo$n.elec.c)
@@ -206,7 +220,7 @@ IGM.mean.firingrate.by.well <- function(s) {
 			df = do.call("rbind",df)
 			maxy <- max(df[,2])
 			colnames(df) <- c("time","meanfiringrate","electrode")
-			plateinfo <- plateinfo(s$layout$array)
+			plateinfo <- .plateinfo(s$layout$array)
 			d1 <- expand.grid(col=1:plateinfo$n.elec.c,row=1:plateinfo$n.elec.r)
 			all.electrodes <- sort(paste(well,"_", d1[,"row"],d1[,"col"],sep=""))
 			layout.electrodes <- c(plateinfo$n.elec.r, plateinfo$n.elec.c)
@@ -227,7 +241,6 @@ IGM.mean.firingrate.by.well <- function(s) {
 	
 }
 
-#############################################
 IGM.plot.mean.firingrate.by.eletrode.by.div<- function(s) {
 	electrode.stats <- lapply(s, function(d){cbind(d$meanfiringrate,d$cw, .get.div(d))})
 	electrode.stats.all <- do.call("rbind",electrode.stats)
@@ -250,9 +263,6 @@ IGM.plot.mean.firingrate.by.eletrode.by.div<- function(s) {
 				 data = df, 
 				 main = paste("Mean Firing Rate across DIV's for ", active.well, ". Maximum firing rate:",round(maxy,2)," Hz", sep = "" ),
 				layout = layout.info$layout,
-				#type = "h",
-				#scales=list(
-          			#	y=list(draw = FALSE)),    
 				drop.unused.levels = FALSE)
 			print(p1)
 		}
@@ -262,7 +272,7 @@ IGM.plot.mean.firingrate.by.eletrode.by.div<- function(s) {
 IGM.plot.mean.firingrate.by.well.by.div<- function(s) {
 	well.stats <- lapply(s, function(d){d$well.stats})
 	well.stats.all <- do.call("rbind",well.stats)
-	plateinfo <- plateinfo(s[[1]]$layout$array)
+	plateinfo <- .plateinfo(s[[1]]$layout$array)
 	wells <- plateinfo$wells
 	names(wells) <- wells #keep the names valid.
 	wells.layout <- plateinfo$layout
@@ -285,7 +295,7 @@ IGM.plot.plate.summary.for.spikes<-function(s,outputdir) {
 		pdf(file=spikePlotPath) 
 
 		#layout 
-  		p<-.plot.mealayout.1(s[[i]]$layout, use.names=T, cex=0.25)
+  		p<-.plot.mealayout(s[[i]]$layout, use.names=T, cex=0.25)
   		title(main= paste( paste("Electrode Layout"), 
                      paste("file= ",  strsplit(basename(s[[i]]$file),".RData")[[1]][1], sep=""),sep='\n'))
 		#MFR
@@ -332,3 +342,212 @@ write.plate.summary.for.spikes<-function(s,outputdir) {
 	}
 }
 
+.check.spikes.monotonic <- function(spikes) {
+  ## Check to see that all spike times are monotonically increasing.
+  ## The counting and histogram routines assumes that spike times
+  ## are sorted, earliest spikes first.
+  results <- sapply( spikes, function(x) { any(diff(x) <0)})
+  if (any(results)) {
+    stop(paste("Spikes are not ordered in increasing time",
+               paste(which(results),collapse=" "),"\n"))
+  }
+}
+
+.make.spikes.to.frate <- function(spikes,
+                                  time.interval=1, #time bin of 1sec.
+                                  frate.min=0,
+                                  frate.max=20,
+                                  clip=FALSE,
+                                  beg=NULL,
+                                  end=NULL
+) {
+  ## Convert the spikes for each cell into a firing rate (in Hz)
+  ## We count the number of spikes within time bins of duration
+  ## time.interval (measured in seconds).
+  ##
+  ## Currently cannot specify BEG or END as less than the
+  ## range of spike times else you get an error from hist().  The
+  ## default anyway is to do all the spikes within a data file.
+  
+  ## Note, we need to check for when there are no spikes; this can
+  ## happen when examining a subset of spikes, e.g. a well in a multi-well
+  ## plate that was not working.
+  nspikes <- lapply(spikes, length)
+  nelectrodes <- length(nspikes)
+  
+  ## if clips is set to TRUE, firing rate is clipped within the
+  ## values frate.min and frate.max.  This is problably not needed.
+  
+  spikes.range <- range(unlist(spikes))
+  if (is.null(beg))  beg <-  spikes.range[1]
+  if (is.null(end))  end <-  spikes.range[2]
+  
+  time.breaks <- seq(from=beg, to=end, by=time.interval)
+  if (time.breaks[length(time.breaks)] < end) {
+    ## extra time bin needs adding.
+    ## e.g seq(1,6, by = 3) == 1 4, so we need to add 7 ourselves.
+    time.breaks <- c(time.breaks,
+                     time.breaks[length(time.breaks)]+time.interval)
+  }
+  nbins <- length(time.breaks) - 1
+  
+  z <- .C("frate",
+          as.double(unlist(spikes)),
+          as.integer(nspikes),
+          as.integer(nelectrodes),
+          as.double(time.breaks[1]), as.double(time.breaks[nbins]),
+          as.double(time.interval),
+          as.integer(nbins),
+          counts = double(nbins*nelectrodes))
+  
+  rates <- matrix(z$counts, nrow=nbins, ncol=nelectrodes)
+  
+  ## Check if there are any electrodes to process.
+  if (nelectrodes > 0) {
+    ## Now optionally set the upper and lower frame rates if clip is TRUE.
+    if (clip)
+      rates <- pmin(pmax(rates, frate.min), frate.max)
+    
+    ## Do the average computation here.
+    ## av.rate == average rate across the array.
+    av.rate <- apply(rates, 1, mean)
+  } else {
+    av.rate <- rep(NA, nbins)
+  }
+  ## We can remove the last "time.break" since it does not correspond
+  ## to the start of a time frame.
+  res <- list(rates=rates,
+              times=time.breaks[-length(time.breaks)],
+              av.rate=av.rate,
+              time.interval=time.interval)
+  res
+}
+
+.plot.meanfiringrate <- function (s, beg, end, main=NULL, lwd=0.2, ...) {
+  ## Plot the mean firing rate over all the cells at each time step.
+  ## Can optionally specify the beginning (BEG) and end (END) time, in
+  ## seconds.
+  
+  if (missing(beg)) beg <- s$rates$times[1]
+  if (missing(end)) end <- s$rates$times[length(s$rates$times)]
+  
+  if (is.null(main))
+    main = basename(s$file)
+  
+  plot(s$rates$times, s$rates$av.rate, type = "h", xlab = "time (s)",
+       xlim=c(beg,end), bty="n", lwd=lwd,
+       ylab = "mean firing rate (Hz)", main = main, ...)
+}
+
+.plot.mealayout <- function(x, use.names=FALSE, ...) {
+  
+  ## Plot the MEA layout.
+  pos <- x$pos
+  plot(NA, asp=1,
+       xlim=x$xlim, ylim=x$ylim,
+       bty="n",
+       xlab="spacing (\u00b5m)", ylab="", type="n")
+  if (use.names)
+    text(pos[,1], pos[,2], rownames(pos), ...)
+  else
+    text(pos[,1], pos[,2], ...)
+}
+
+.summary.spike.list <- function(object, ...) {
+  cat(paste("Spike data:", object$file, "\n"))
+  cat(paste("NCells", object$NCells, "\n"))
+  cat(sprintf("Time (s) [%.3f %.3f]\n", object$rec.time[1], object$rec.time[2]))
+}
+
+.print.spike.list <- function(x) {
+  ## Default print method for a SPIKES data structure.
+  cat("MEA spikes\n")
+  cat(basename(x$file), "\n")
+  cat("nchannels ", x$NCells, "\n")
+}
+
+isi <- function(train) {
+  ## Compute the ISI for one spike train.
+  isi <- NA
+  if ( length(train) > 1) {
+    isi <- diff(train)
+  } 
+  isi
+}
+
+##read the data and have access to all the meta-data
+.spike.simulation<-function(s1,
+                            elec.min.rate=(1/60), 
+                            elec.max.rate=25,
+                            well.min.rate=15){
+  dt <- 1
+  current.electrode.rate <- s1$meanfiringrate
+  rec.start <- s1$rec.time[1]
+  rec.end <- s1$rec.time[2]
+  spikes <- list()
+  for (electrode in 1:length(s1$spikes)) {
+    rate <- current.electrode.rate[electrode] * dt / 1000.0
+    spiketimes <- list()
+    timepoints <- seq(rec.start,rec.end, by = 0.001)
+    p <- which(rate > runif(length(timepoints)))
+    spikes[[electrode]] <- timepoints[which(rate > runif(length(timepoints)))]
+    
+  }
+  names(spikes) <- names(s1$spikes)
+  temp.s <- .construct.s(spikes, NULL, time.interval = 1, beg = NULL, end = NULL, corr.breaks = 0, 
+                         s1$layout, filename = s1$file)
+  
+  
+  #indices of low and high firing rate
+  low <- which(temp.s$meanfiringrate < elec.min.rate)
+  high <- which(temp.s$meanfiringrate > elec.max.rate)
+  
+  ## TODO, check that low and high are non-zero length vectors.
+  extremes <- c(low, high)
+  
+  bad.ids <- names(extremes)
+  bad.ids <- c("-", bad.ids)  # "-" needed to remove these ids!
+  
+  s2 <- remove.spikes(temp.s, bad.ids)
+  
+  s2$treatment<-s1$treatment
+  s2$size<-s1$size
+  s2$units<-s1$units
+  s2$dose<-s1$dose
+  s2$well<-s1$well
+  
+  #get.num.AE
+  s2<-get.num.AE(s2)
+  
+  #indices of low and high firing rate
+  
+  low <- which(s2$nAE < well.min.rate)
+  
+  bad.wells <- names(low)
+  bad.wells <- c("-", bad.wells)   # "-" needed to remove these well!
+  #just these three for example
+  s<- remove.spikes(s2, bad.wells)
+  
+  s$goodwells<-names(which(s2$nAE >= well.min.rate))
+  
+  #[which(s2$nAE >= well.min.rate)
+  s$treatment<-s1$treatment
+  names(s$treatment)<-s1$well
+  s$size<-s1$size
+  names(s$size)<-s1$well
+  s$units<-s1$units
+  names(s$units)<-s1$well
+  s$dose<-s1$dose
+  names(s$dose)<-s1$well
+  s$well<-s1$well
+  s<-get.num.AE(s)
+  s$timepoint <- s1$timepoint
+  if (s$nspikes[1] >0) {
+    s$allb <- lapply(s$spikes, mi.find.bursts,s$parameters$mi.par)
+    s$bs<-calc.burst.summary(s)
+  }
+  
+  s <- calculate.isis(s)
+  s$well.stats <- IGM.compute.mean.firingrate.by.well(s)
+  s
+}

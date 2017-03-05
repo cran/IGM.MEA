@@ -2,7 +2,7 @@ has.network.spikes <-function(nspikes) {
 	return(!is.null(.as.data.frame.network.spikes(nspikes)))
 }
 
-IGM.summary.network.spikes<-function(e,nspikes,ns.E,sur){
+summarize.network.spikes<-function(e,nspikes,ns.E,sur){
 	wells <- nspikes$wells
 	names(wells) <- wells #keep the names valid.
 	for (i in 1:length(wells)) {
@@ -116,7 +116,7 @@ IGM.summary.network.spikes<-function(e,nspikes,ns.E,sur){
 
 calculate.network.spikes <- function(e,sur=100, ns.N, ns.T) {
 	#get well information
-	plateinfo <- plateinfo(e$layout$array)
+	plateinfo <- .plateinfo(e$layout$array)
 	wells <- plateinfo$wells
 	names(wells) <- wells #keep the names valid.
 	wells.layout <- plateinfo$layout
@@ -177,7 +177,7 @@ IGM.plot.active.wells.network.spikes<- function(nspikes) {
 	active.wells <- .active.wells.network.spikes(nspikes)$ns.all
 	if (length(active.wells)>0) {
 		for (j in 1:length(active.wells)) {
-			IGM.plot.ns(active.wells[[j]], main = names(active.wells)[j],ylab='Count', xlab='Time (s)')
+			IGM.plot.network.spikes(active.wells[[j]], main = names(active.wells)[j],ylab='Count', xlab='Time (s)')
 			y<- as.vector(active.wells[[j]]$mean)
 			plot(ts(y,start = c(-(length(y)-1)/2,1)), xlab='Time (ms)', ylab='Count', main=paste('Mean NS for', 
 				names(active.wells)[j],sep = " "))
@@ -185,7 +185,7 @@ IGM.plot.active.wells.network.spikes<- function(nspikes) {
 	}
 }
 
-write.csv.network.spikes <-function(s,nspikes,outputdir) {
+write.network.spikes.to.csv <-function(s,nspikes,outputdir) {
   csvwell <- paste(outputdir,"/",get.project.plate.name(s$file),"_ns.csv",sep="")
   div <- .get.div(s)
   active.wells <- .active.wells.network.spikes(nspikes)$ns.all

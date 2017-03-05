@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>Installing the package</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: #990073
+   }
+
+   pre .number {
+     color: #099;
+   }
+
+   pre .comment {
+     color: #998;
+     font-style: italic
+   }
+
+   pre .keyword {
+     color: #900;
+     font-weight: bold
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: #d14;
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<p>IGM.MEA was constructed to perform feature extraction, statistical analysis and plotting of multiple MEA recordings with multiple genotypes and treatments. This vignette directs the package user on how to perform an analysis of an exemplary experiment that is made of three sequential recordings of the same plate.</p>
+
+<h2>Installing the package</h2>
+
+<p>The IGM.MEA package is available for installation under the CRAN repository:</p>
+
+<pre><code class="r">#install.packages( &quot;IGM.MEA&quot;,repos=&quot;http://cran.us.r-project.org&quot;)
+</code></pre>
+
+<h2>Loading the package</h2>
+
+<p>To load the package please load IGM.MEA and dependencies:</p>
+
+<pre><code class="r">library(IGM.MEA)
+</code></pre>
+
+<pre><code>## Warning: no DISPLAY variable so Tk is not available
+</code></pre>
+
+<pre><code class="r">library(plyr)
+library(ggplot2)
+library(reshape2)
+</code></pre>
+
+<h2>Selecting input files</h2>
+
+<p>Before we can perform the analysis we need to locate the recording spikeList.csv files. For this purpose we will choose three recording .csv files and a plate layout .csv file that come with the IGM.MEA package under /IGM.MEA/extdata/ :</p>
+
+<pre><code class="r"># set path to &quot;_spike_list.csv&quot; files from the file path in &#39;filesPath&#39;
+spkListFiles&lt;-c(system.file(&quot;extdata&quot;,&quot;exampleRecording_1012016_plate1_DIV1_spike_list.csv.gz&quot;,package = &quot;IGM.MEA&quot;),
+                system.file(&quot;extdata&quot;,&quot;exampleRecording_1012016_plate1_DIV3_spike_list.csv.gz&quot;,package = &quot;IGM.MEA&quot;),
+                system.file(&quot;extdata&quot;,&quot;exampleRecording_1012016_plate1_DIV4_spike_list.csv.gz&quot;,package = &quot;IGM.MEA&quot;))
+
+# set the recording layout file &quot;_expLog.csv&quot;
+ExperimentalLogFile &lt;- system.file(&quot;extdata&quot;,&quot;exampleRecording_1012016_plate1_expLog.csv.gz&quot;,package = &quot;IGM.MEA&quot;)
+</code></pre>
+
+<h2>Setting output directories</h2>
+
+<p>Before starting the actual loading of the data, lets also set  input and output directories</p>
+
+<pre><code class="r"># The next command will get the directory of the csv files
+data.dir&lt;-dirname(spkListFiles[1])
+
+# create the output directory as /Analysis under the data.dir
+output.dir&lt;-paste0( data.dir , &quot;/Analysis&quot; ) 
+suppressWarnings(  dir.create(output.dir) )
+
+# create the output directory for single recording analysis 
+output.perDIV.dir&lt;-paste0( data.dir , &quot;/Analysis/outputPerDIV&quot; ) 
+suppressWarnings(  dir.create(output.perDIV.dir) )
+
+# create the output directory for R objects of analyzed recordings 
+Robject.dir&lt;-paste0( data.dir , &quot;/Analysis/R_Objects&quot; )
+suppressWarnings(  dir.create(Robject.dir) )
+
+# create the output directory for log files
+log.dir&lt;-paste0( output.dir , &quot;/LogFiles&quot; ) 
+suppressWarnings(  dir.create(log.dir) )
+
+# For organization sake, set a list object to hold all output directories 
+analysis&lt;-list(spikeFiles = spkListFiles, output.dir = output.dir, Routput.dir = Robject.dir, output.perDIV.dir = output.perDIV.dir)
+</code></pre>
+
+<p>Now let&#39;s load the recordings and create the &#39;spike.list&#39; class R object</p>
+
+<pre><code class="r"># A loop to go over all three recording files
+for (i in 1:length(spkListFiles)){
+  #save title for output file name
+  title&lt;-strsplit(basename(spkListFiles[i]), &quot;.csv&quot;)[[1]][1]
+  #load plate design info for each file in the list
+  plate.chem.info&lt;-get.experimental.log.file(spkListFiles[i], ExperimentalLogFile)
+
+    # convert the spike list data to a &#39;spike.list&#39; class Robject
+  analysis$Robject[i]&lt;-read.spikelist(key=title, spkListFile=spkListFiles[i],    chem.info=plate.chem.info,Robject.dir=Robject.dir) 
+}
+</code></pre>
+
+<pre><code>## Total number of spikes: 102439
+## Unique number of electrodes: 255
+## Time range [0.010 35.016] (seconds)
+##                                         nelectrodes nspikes time.min
+## exampleRecording_1012016_plate1_DIV1.gz         255  102439     0.01
+##                                         time.max
+## exampleRecording_1012016_plate1_DIV1.gz 35.01592
+##  [1] &quot;spikes&quot;    &quot;sCount&quot;    &quot;epos&quot;      &quot;names&quot;     &quot;array&quot;    
+##  [6] &quot;treatment&quot; &quot;dose&quot;      &quot;size&quot;      &quot;well&quot;      &quot;units&quot;    
+## Total number of spikes: 84758
+## Unique number of electrodes: 268
+## Time range [0.010 50.306] (seconds)
+##                                         nelectrodes nspikes time.min
+## exampleRecording_1012016_plate1_DIV3.gz         268   84758  0.01048
+##                                         time.max
+## exampleRecording_1012016_plate1_DIV3.gz 50.30616
+##  [1] &quot;spikes&quot;    &quot;sCount&quot;    &quot;epos&quot;      &quot;names&quot;     &quot;array&quot;    
+##  [6] &quot;treatment&quot; &quot;dose&quot;      &quot;size&quot;      &quot;well&quot;      &quot;units&quot;    
+## Total number of spikes: 84021
+## Unique number of electrodes: 252
+## Time range [0.010 50.058] (seconds)
+##                                         nelectrodes nspikes time.min
+## exampleRecording_1012016_plate1_DIV4.gz         252   84021     0.01
+##                                         time.max
+## exampleRecording_1012016_plate1_DIV4.gz 50.05832
+##  [1] &quot;spikes&quot;    &quot;sCount&quot;    &quot;epos&quot;      &quot;names&quot;     &quot;array&quot;    
+##  [6] &quot;treatment&quot; &quot;dose&quot;      &quot;size&quot;      &quot;well&quot;      &quot;units&quot;
+</code></pre>
+
+<h2>Extracting spike and burst data</h2>
+
+<p>Now we have the information from each spike list file  in a new &#39;spike.list&#39; R object that will be next saved in the /Analysis/Robject directory</p>
+
+<p>The next step will be to construct a list of the objects for each recording and extract the features.
+But first, let&#39;s load the default parameters that come with the package, each one can be set by the user. This file contains default parameters for all the functions, and we&#39;ll mention some of them here.</p>
+
+<pre><code class="r">data(&quot;parameters&quot;)
+</code></pre>
+
+<p>You can change the timestamp of the analysis parameters so that you can track the time the analysis was done
+by: parameters$timeStamp=format(Sys.time(), &ldquo;%m-%d-%y<em>%H</em>%M%_%S&rdquo;)
+For this example we are using the default which is &ldquo;DATE_TIME&rdquo; and will be printed in the output file names</p>
+
+<h2>Extracting spike and burst features</h2>
+
+<p>Calculate.spike.features is the first function used in the analysis pipeline, as that, this function also constructs the &#39;spike.list&#39; object (called &#39;s&#39; here) and sets the parameters for the analysis inside the object.
+We now set the defaults for an active electrode as in the parameters object, setting the minimum MFR to a lenient 1 spike in 60s and a maximum MFR of 1,000Hz. We also set the minimum of active electrodes to include a well in the analyses to 4 electrodes, which is 25% of the electrodes in a 48-well plate. </p>
+
+<p>The parameters also hold the selected algorithm for burst detection: &ldquo;mi&rdquo; for Maximum Interval and &ldquo;si&rdquo; for the Poisson Surprise algorithm in parameters$burst.type. To extract burst features we use calculate.burst.features.  For this example let&#39;s use the &ldquo;ps&rdquo; algorithm, so we have to set it before calling the object initializing function.</p>
+
+<pre><code class="r"># Select burst algorithm
+parameters$burst.type=&quot;ps&quot;
+
+# Construct the &#39;spike.list&#39; object and calculate spike features
+s&lt;-calculate.spike.features(analysis$Robject, parameters)
+
+# Detect bursts and calculate their feature statistics
+s&lt;-calculate.burst.features(s)
+
+# Iterate through all the recordings to calculate inter-spike intervals and well level mean firing rate and add that to the &#39;spike.list&#39; object
+
+for (i in 1:length(s)) {
+  s[[i]] &lt;- calculate.isis(s[[i]])
+  s[[i]]$well.stats &lt;- IGM.compute.mean.firingrate.by.well(s[[i]])
+}
+</code></pre>
+
+<p>That&#39;s it, basic spike and burst features are now stored in the &#39;spike.list&#39; object (s) for each of the recordings.
+We can now view them by looking into the object. For example, to view spikes for electrode B3_41 in the first recording, try the following:</p>
+
+<pre><code class="r">s[[1]]$spikes$B3_41
+</code></pre>
+
+<pre><code>##  [1]  0.55344  2.84256  9.51040 10.51240 12.84232 14.17480 20.87056
+##  [8] 21.53936 23.87976 26.23032 30.24168
+</code></pre>
+
+<p>To view burst information for bursts calculated for electrode E7_42 of the 2nd recording, try the following:</p>
+
+<pre><code class="r">s[[2]]$allb$E7_42
+</code></pre>
+
+<pre><code>##      beg end      IBI len    durn mean.isis        SI
+## [1,]  11  16       NA   6 0.55776 0.1115520  5.532836
+## [2,]  29  31  8.79088   3 0.03752 0.0187600  6.099738
+## [3,]  39  43  5.86656   5 0.31488 0.0787200  5.846385
+## [4,]  57  63 14.88784   7 0.60760 0.1012667  6.895707
+## [5,]  64  80  5.17472  17 2.63536 0.1647100 10.018063
+## [6,]  84  86  3.79088   3 0.05944 0.0297200  5.206044
+</code></pre>
+
+<p>beg and end stand for the sequential spike  that begins and ends the burst. IBI is the inter burst interval from the previous burst. len is the number of spikes in the burst. durn is the burst duration in seconds. mean.isis is the average inter spike intervals within this burst and SI is the surprise index, only relevant when running the poisson surprise algorithm.</p>
+
+<h4>Extracting network spike data</h4>
+
+<p>To calculate network spikes we iterate over all the recordings , for each recording we  1) calculate the network spikes and 2) extract the network spike features from the spike.list object. To call network spikes, we provide the function calculate.network.spikes with several arguments: </p>
+
+<p>s[[i]] - the first is the &#39;spike.list&#39; object of the recording</p>
+
+<p>sur - the number of datapoints to be used in summmarizing mean network spikes (default is 100)</p>
+
+<p>ns.N - the number of electrodes above which  a network spike will be called </p>
+
+<p>ns.T - the time window for calling a network spike (10ms). </p>
+
+<p>For extracting the features into the &#39;spike.list&#39; object, we use IGM.summary.network.spikes and provide it with the &#39;spike.list&#39; object, the calculated network spikes data, the minimum number of spikes in each electrode that we wish to consider (default is 1) and agaiun the &#39;sur&#39; parameter from above.</p>
+
+<pre><code class="r"># Iterate through all the recordings
+for (i in 1:length(s)) {
+
+  #Calculate Network Spikes
+  nspikes.old &lt;- calculate.network.spikes(s[[i]],parameters$sur, parameters$ns.N, parameters$ns.T)
+
+  # Extract network spike features that will be printed later
+  nspikes &lt;- summarize.network.spikes(s[[i]],nspikes.old,ns.E = 1, parameters$sur)
+
+  # Add network spike data to the &#39;spike.list&#39; object
+  s[[i]]$ns.all&lt;-nspikes$ns.all
+}
+</code></pre>
+
+<p>We now have all the network spike features calculated and we can look at them easily. Try running the following to see the features extracted for well B5 :</p>
+
+<pre><code class="r">s[[i]]$ns.all$B5$en.brief
+</code></pre>
+
+<pre><code>##       spikes ns spikes.in.ns percent.of.spikes.in.ns mean.spikes.per.ns
+## B5_11     86  2            2                2.325581           1.000000
+## B5_13    103  2            2                1.941748           1.000000
+## B5_21     22  3            4               18.181818           1.333333
+## B5_23    107  4            4                3.738318           1.000000
+## B5_31     17  4            4               23.529412           1.000000
+## B5_32      5  0            0                0.000000                 NA
+## B5_34    104  4            4                3.846154           1.000000
+## B5_41     11  2            2               18.181818           1.000000
+## B5_42     19  1            1                5.263158           1.000000
+## B5_44     47  3            4                8.510638           1.333333
+##       sd.spikes.per.ns mean.insis
+## B5_11        0.0000000   7.700000
+## B5_13        0.0000000   0.720000
+## B5_21        0.5773503   3.805000
+## B5_23        0.0000000   2.566667
+## B5_31        0.0000000   2.536667
+## B5_32               NA         NA
+## B5_34        0.0000000   1.096667
+## B5_41        0.0000000   4.410000
+## B5_42               NA         NA
+## B5_44        0.5773503   1.645000
+</code></pre>
+
+<h4>Extracting network bursts data</h4>
+
+<p>The last attribute we can extract is network bursts. To extract network bursts we do not require iterating through the &#39;spike.list&#39; object, that is done automatically by calculate.network.bursts. We provide the function with several arguments alongside the &#39;spike.list&#39; object: 
+Sigma - the window sizes used for the analysis (10, 20 and 50ms)</p>
+
+<p>min_electrodes - the minimum electrodes to call a network burst </p>
+
+<p>local_region_min_nAE - to tell the algorithm if we would like to use an adaptive threshold (default is 0).</p>
+
+<pre><code class="r">   nb.list &lt;- calculate.network.bursts(s,parameters$Sigma,
+                                       parameters$min_electrodes,
+                                       parameters$local_region_min_nAE)
+</code></pre>
+
+<pre><code>## calculating network bursts for recording exampleRecording_1012016_plate1_DIV1.RData
+## calculating network bursts for recording exampleRecording_1012016_plate1_DIV3.RData
+</code></pre>
+
+<pre><code>## Warning in min(well.data[well.data &gt; 0]): no non-missing arguments to min;
+## returning Inf
+</code></pre>
+
+<pre><code>## calculating network bursts for recording exampleRecording_1012016_plate1_DIV4.RData
+</code></pre>
+
+<pre><code class="r">    nb.features &lt;- NB.matrix.to.feature.dfs( nb.list$nb.features.merged )
+
+    # attach data to s object
+    for (i in 1:length(s) ){
+      s[[i]]$nb.all&lt;-nb.list$nb.all[[i]]
+      s[[i]]$data.frame$nb.features&lt;-nb.list$nb.features[[i]]
+    }
+</code></pre>
+
+<h2>Writing and plotting single recording data</h2>
+
+<p>At this point you might wonder how to produce burst feature distributions that IGM.MEA produces. The answer is that since the distributions derive from the burst features that were already calculated,  they are automatically constructed as part of the printing process of burst features. So, next we turn to printing the extracted features for each single recording. When printing burst features, we&#39;ll come back to producing burst feature distribution.</p>
+
+<h3>printing spike data</h3>
+
+<pre><code class="r"># print spikes graphs (pdf format) for each recording
+IGM.plot.plate.summary.for.spikes(s,analysis$output.perDIV.dir)
+
+# write spike feature tables for each recording
+suppressWarnings(write.plate.summary.for.spikes(s,analysis$output.perDIV.dir))
+</code></pre>
+
+<h3>printing burst data</h3>
+
+<p>As promised, the burst feature distributions are already calculated by the burst printing functions, since they are extracted from calculated burst features. The distribution features are calculated for five burst features : burst duration, IBI, nspikes (number of spikes in a burst), spikeFreq (Hz) and ISI within bursts. When running IGM.plot.plate.summary.for.bursts, the function calls calc.burst.distributions to calculate and plot those distributions for each loaded recording. The default parameters object loaded earlier, holds five objects with 7 arguments for the five distribution features: </p>
+
+<p>min.cases - the minimum number of bursts for performing the analysis</p>
+
+<p>x.lim - the maximum value of that feature. In this example, we perform distribution analysis for IBI. The xlimit is 20, which means that the longest IBI taken into account here would be 20s long. </p>
+
+<p>bins.in.seg - the bins in each second of IBI. Here bins.in.seg is set to 5, meaning that the IBI distribution will  be cut into 0.2s bins in a maximum of 20s. Thus, the final distribution will be made of 100 bins of 0.2s.</p>
+
+<p>filter.by.min - a binary, to decide whether bursts should be filtered by a minimum value (default is 0) </p>
+
+<p>min.values - the actual minimum IBI to filter by. </p>
+
+<p>per.well - a binary argument, 1: the algorithm will group electrodes by well, and then group wells by treatment and 0 (default): electrodes will be grouped directly by treatment. </p>
+
+<p>perform - a binary argument meant to decide whether this distribution analysis should be performed at all. While   the default is to perform all five distributions, in this example we perform only the IBI distribution analysis    for all three recordings.</p>
+
+<pre><code class="r"># plot burst pdfs for each recording
+suppressWarnings(IGM.plot.plate.summary.for.bursts(s,analysis$output.perDIV.dir,parameters))
+</code></pre>
+
+<pre><code>## [1] &quot;Running IBI distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=20; binsInSec=5;perWell=0; duration=35.00592; feature=&#39;IBI&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running ISI distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=0.5; binsInSec=100;perWell=0; duration=35.00592; feature=&#39;ISI&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running nSpikes in bursts distribution analysis.&quot;
+## Arguments: minVals=5; xlimit=200; binsInSec=1;perWell=0; duration=35.00592; feature=&#39;nspikesInBurst&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running duration of bursts distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=18; binsInSec=10;perWell=0; duration=35.00592; feature=&#39;duration&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running spike density in bursts distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=300; binsInSec=1;perWell=0; duration=35.00592; feature=&#39;spikesDensityInBurst&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running IBI distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=20; binsInSec=5;perWell=0; duration=50.29568; feature=&#39;IBI&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running ISI distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=0.5; binsInSec=100;perWell=0; duration=50.29568; feature=&#39;ISI&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running nSpikes in bursts distribution analysis.&quot;
+## Arguments: minVals=5; xlimit=200; binsInSec=1;perWell=0; duration=50.29568; feature=&#39;nspikesInBurst&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running duration of bursts distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=18; binsInSec=10;perWell=0; duration=50.29568; feature=&#39;duration&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running spike density in bursts distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=300; binsInSec=1;perWell=0; duration=50.29568; feature=&#39;spikesDensityInBurst&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running IBI distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=20; binsInSec=5;perWell=0; duration=50.04832; feature=&#39;IBI&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running ISI distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=0.5; binsInSec=100;perWell=0; duration=50.04832; feature=&#39;ISI&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running nSpikes in bursts distribution analysis.&quot;
+## Arguments: minVals=5; xlimit=200; binsInSec=1;perWell=0; duration=50.04832; feature=&#39;nspikesInBurst&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running duration of bursts distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=18; binsInSec=10;perWell=0; duration=50.04832; feature=&#39;duration&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code>## [1] &quot;Running spike density in bursts distribution analysis.&quot;
+## Arguments: minVals=15; xlimit=300; binsInSec=1;perWell=0; duration=50.04832; feature=&#39;spikesDensityInBurst&#39;; filterValuesByMin=0; minValues=0
+</code></pre>
+
+<pre><code class="r"># write burst feature tables for each recording
+write.plate.summary.for.bursts(s,analysis$output.perDIV.dir)
+</code></pre>
+
+<h3>printing network spikes data</h3>
+
+<p>The commands below print single recording ns data. Here they are printed for the first of the three recordings</p>
+
+<pre><code class="r">i=1 
+# Get plate name
+basename &lt;- strsplit(basename(s[[i]]$file), &quot;[.]&quot;)[[1]][1]
+
+#Use the next commands for plotting all the ns graphs. Try opening a pdf file so that all will be printed to the same file (which is automatically done for burst features):
+
+pdf(file=paste0(analysis$output.perDIV.dir,&quot;/ns_plot.pdf&quot;))
+IGM.xyplot.network.spikes(nspikes)  
+IGM.plot.active.wells.network.spikes(nspikes)
+dev.off()
+</code></pre>
+
+<pre><code>## pdf 
+##   2
+</code></pre>
+
+<pre><code class="r"># write network spike data to output file
+write.network.spikes.to.csv(s[[i]],nspikes,analysis$output.perDIV.dir)
+
+# Check the graphs and csvs printed under the analysis$output.perDIV.dir path
+</code></pre>
+
+<h2>Aggregating recordings</h2>
+
+<p>One of the strong advantages of IGM.MEA is it&#39;s ability to combine the information from all the loaded recordings and use all of it when comparing between treatments. The following commands aggregate the data for spikes, bursts and network spikes. Network burst features were already aggregated automatically when we ran NB.matrix.to.feature.dfs.</p>
+
+<pre><code class="r">spike.features = IGM.aggregate.features(s, &quot;spike&quot;,parameters)
+ns.features = IGM.aggregate.features(s, &quot;ns&quot;,parameters)
+burst.features = IGM.aggregate.features(s, &quot;burst&quot;,parameters)
+
+# printing spike features nAE
+spike.features$nAE
+</code></pre>
+
+<pre><code>##    well treatment DIV1 DIV3 DIV4
+## 1    B2    treatX   14   13   13
+## 2    B3    treatX   16   16   16
+## 3    B4 untreated   13   13 &lt;NA&gt;
+## 4    B5 untreated   10 &lt;NA&gt;   10
+## 5    B6    treatY   11   12   12
+## 6    B7    treatY   12   12   12
+## 7    C2    treatX   14   13   14
+## 8    C3    treatX   13   13   13
+## 9    C6    treatY   10   12   10
+## 10   C7    treatY   12   13   13
+## 11   D2    treatX   15   14   14
+## 12   D3    treatX   16   15   15
+## 13   D5 untreated &lt;NA&gt;   14 &lt;NA&gt;
+## 14   D6    treatY   11   13   13
+## 15   D7    treatY   13   12   12
+## 16   E2    treatX   16   14   15
+## 17   E3    treatX   16   16   15
+## 18   E4 untreated &lt;NA&gt;   14   15
+## 19   E5 untreated   12   11   12
+## 20   E6    treatY   14   14   13
+## 21   E7    treatY   14   14   14
+</code></pre>
+
+<pre><code class="r">#Feel free to explore the spike/ns/burst and nb.features for the different features they offer
+</code></pre>
+
+<h2>Filtering inactive wells</h2>
+
+<p>The next step is optional, it allows the user to discard from the analysis wells that were not active in at least X% of the recordings. This percentage is also a default parameter, currently set to 50%. Thus, any well that is not considered active (at least 4 active electrodes) in at least 2 out of the 3 loaded recordings will be ignored when comparing the treatments throughout the recordings. In this example we perform the filter on spike and NB features.</p>
+
+<pre><code class="r"># All uncalculated aEs were set previously to NA, convert all those to 0 aE before the filter
+nae &lt;- spike.features$nAE
+nae[is.na(nae)] &lt;- 0
+
+# filter spike wells
+spike.features = lapply(spike.features, function(x) filter.wells( x, nae, parameters$well.min.rate, parameters$well.filter.maximum.DIV.inactive.ratio))
+
+# filter network burst wells
+nb.features &lt;- lapply(nb.features, function(x) filter.wells(x, nae, parameters$well.min.rate, parameters$well.filter.maximum.DIV.inactive.ratio ))
+# re-order features by well name
+nb.features &lt;- lapply(nb.features, function(x) x[order(x[,&#39;well&#39;]),])
+
+# printing spike features nAE after filter
+spike.features$nAE
+</code></pre>
+
+<pre><code>##    well treatment DIV1 DIV3 DIV4
+## 1    B2    treatX   14   13   13
+## 2    B3    treatX   16   16   16
+## 3    B4 untreated   13   13    0
+## 4    B5 untreated   10    0   10
+## 5    B6    treatY   11   12   12
+## 6    B7    treatY   12   12   12
+## 7    C2    treatX   14   13   14
+## 8    C3    treatX   13   13   13
+## 9    C6    treatY   10   12   10
+## 10   C7    treatY   12   13   13
+## 11   D2    treatX   15   14   14
+## 12   D3    treatX   16   15   15
+## 14   D6    treatY   11   13   13
+## 15   D7    treatY   13   12   12
+## 16   E2    treatX   16   14   15
+## 17   E3    treatX   16   16   15
+## 18   E4 untreated    0   14   15
+## 19   E5 untreated   12   11   12
+## 20   E6    treatY   14   14   13
+## 21   E7    treatY   14   14   14
+</code></pre>
+
+<p>After the filter we can observe the spike features dataframe and find that well D5 was dropped from the table because it lacked activity in the first two recordings (compare to spike.features$nAE before the filter was applied).</p>
+
+<h2>Writing aggregated tables to files</h2>
+
+<p>We can now easily print all the aggregated tables of all the extracted features using one command for each attribute, These files are printed into a designated directory by the name of each activity attribute (spikes, bursts, ns, nb) under the output Analysis folder.</p>
+
+<pre><code class="r">#write csvs 
+write.features.to.files(s, spike.features, analysis$output.dir, &quot;spikes&quot;)
+write.features.to.files(s, burst.features, analysis$output.dir, &quot;bursts&quot;)
+write.features.to.files(s, ns.features, analysis$output.dir, &quot;ns&quot;)
+write.features.to.files(s, nb.features, analysis$output.dir, &quot;nb&quot;)
+</code></pre>
+
+<h2>Testing for differences between treatments</h2>
+
+<p>The example recordings have three treatments (groups): treatX, treatY and untreated. to perform MW-tests, permutate the data and plot, we first need to decide which treatment we would like to compare to all the others. Here we use &#39;untreated&#39; as that treatment that will be tested against treatX and treatY. However, you can also use the get.wt(s) function and it will open a tcltk window with the treatments available on the plate and will let you choose the one you&#39;re interested in, to use as argument to the testing scheme.</p>
+
+<pre><code class="r">suppressMessages(permute.features.and.plot(s, &quot;untreated&quot;, parameters$perm.n, spike.features, &quot;spikes&quot;, analysis$output.dir))
+suppressMessages(permute.features.and.plot(s, &quot;untreated&quot;, parameters$perm.n, burst.features, &quot;bursts&quot;, analysis$output.dir))
+suppressMessages(permute.features.and.plot(s, &quot;untreated&quot;, parameters$perm.n, ns.features, &quot;ns&quot;, analysis$output.dir))
+suppressMessages(permute.features.and.plot(s, &quot;untreated&quot;, parameters$perm.n, nb.features, &quot;nb&quot;, analysis$output.dir))
+</code></pre>
+
+<p>At this point, we have extracted all features, combined the recordings, tested the differences between the treatments and printed all the results in graphs and tables. The last thing we want to perform is combining the distributions of all three recordings, testing distribution differences between treatments and printing the results. This step is easily done using one function: dist.perm. The function requires a distribution file for each burst feature, which are automatically printed by calc.burst.distributions into the /Analysis/outputPerDIV/distributionFiles folder. Aside from the distribution file, dist.perm also required the number of permutations to perform and the two treatments to be compared. Dist.perm returns an objects with the following information: </p>
+
+<ul>
+<li>two  distributions of the feature, one per each treatment, combined for all the recordings, the </li>
+<li>two comulative distributions, as as the above</li>
+<li>p-values for the distribution differences (Earth Mover&#39;s Distance) and comulative distribution differences (Maximum Distance, please see IGM.MEA manuscript for full details)</li>
+<li>permutation p-values for each distribution</li>
+<li>original maximum distance and EMD value
+The normalized distribution and it&#39;s corrsponding EMD p-value can be extracted from the dist.perm returned object and plotted as follows:</li>
+</ul>
+
+<pre><code class="r">result &lt;- suppressWarnings(dist.perm(paste0(dirname(spkListFiles[1]),&quot;/Analysis/outputPerDIV/distributionFiles/exampleRecording_1012016_plate1_DATE_TIME_IBI_distributions.csv&quot;),1000,&quot;untreated&quot;,&quot;treatX&quot;))
+</code></pre>
+
+<pre><code>## 100 permutations
+## 200 permutations
+## 300 permutations
+## 400 permutations
+## 500 permutations
+## 600 permutations
+## 700 permutations
+## 800 permutations
+## 900 permutations
+## 1000 permutations
+</code></pre>
+
+<pre><code class="r">plot(result$data.wt.Original,col=&quot;blue&quot;,main=basename,type=&quot;l&quot;,lwd=3,xlab=&quot;IBI&quot;)
+points(result$data.ko.Original,col=&quot;green&quot;,type=&quot;l&quot;,lwd=3)
+par(mfrow=c(1,1))  
+mtext(side = 1, at = 0, line = 4,
+          text = paste(&quot;P.value EMD after 1000 permutations: &quot;,format((1-result$perm.EMD), digits = 2),sep=&quot;&quot;),col = &quot;black&quot;,cex= 0.9,adj=0)    
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-20-1.svg" alt="plot of chunk unnamed-chunk-20"/></p>
+
+<p>And the cumulative distribution with it&#39;s corrsponding MD p-value can be extracted as follows:</p>
+
+<pre><code class="r">suppressWarnings(result &lt;- dist.perm(paste0(dirname(spkListFiles[1]),&quot;/Analysis/outputPerDIV/distributionFiles/exampleRecording_1012016_plate1_DATE_TIME_IBI_distributions.csv&quot;),1000,&quot;untreated&quot;,&quot;treatX&quot;))
+</code></pre>
+
+<pre><code>## 100 permutations
+## 200 permutations
+## 300 permutations
+## 400 permutations
+## 500 permutations
+## 600 permutations
+## 700 permutations
+## 800 permutations
+## 900 permutations
+## 1000 permutations
+</code></pre>
+
+<pre><code class="r">plot(result$data.wt,col=&quot;blue&quot;,main=basename,type=&quot;l&quot;,lwd=3,xlab=&quot;IBI&quot;)
+points(result$data.ko,col=&quot;green&quot;,type=&quot;l&quot;,lwd=3)
+par(mfrow=c(1,1))  
+mtext(side = 1, at = 0, line = 4,
+      text = paste(&quot;P.value Max distance after 1000 permutations: &quot;,format((1-result$perm.p), digits = 3),sep=&quot;&quot;),col = &quot;black&quot;,cex= 0.9,adj=0)    
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-21-1.svg" alt="plot of chunk unnamed-chunk-21"/></p>
+
+<p>This document provides the steps to use IGM.MEA&#39;s functions as a pipeline for an MEA experiment analysis lasting 3 DIVs. In the /Analysis output folder are now the full results for extracting all the features and comparing them between the treatments that we decided to test. Even with only three recordings the output files are numerous require a deep dive for better understanding the full picture of the difference between treatments. We hope you will enjoy all the capabilities that IGM.MEA has to offer and use it to deeply and fully understand your MEA recordings. Please read the IGM.MEA manuscript for detailed information about the methods and do not hesitate to contact us for any explanation that might be lacking in this document.</p>
+
+<p>Goodluck!
+IGM MEA team</p>
+
+</body>
+
+</html>

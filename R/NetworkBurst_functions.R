@@ -1,3 +1,33 @@
+.graythresh <- function(I) {
+  I <- as.vector(I)
+  if (min(I) < 0 | max(I) >1) {
+    stop("Data needs to be between 0 and 1")
+  }
+  I <- I * 256
+  
+  num_bins <- 256
+  counts <- hist(I,num_bins, plot = FALSE)$counts
+  
+  # Variables names are chosen to be similar to the formulas in the Otsu paper.
+  p <-  counts / sum(counts)
+  omega <- cumsum(p)
+  mu <- cumsum(p * (1:num_bins))
+  mu_t <- mu[length(mu)]
+  
+  sigma_b_squared <- (mu_t * omega - mu)^2 / (omega * (1 - omega))
+  sigma_b_squared[is.na(sigma_b_squared)] <- 0
+  maxval <- max(sigma_b_squared)
+  isfinite_maxval <- is.finite(maxval)
+  if (isfinite_maxval) {
+    idx <- mean(which(sigma_b_squared == maxval))
+    #Normalize the threshold to the range [0, 1].
+    level <- (idx - 1) / (num_bins - 1)
+  } else {
+    level <- 0.0
+  }
+}
+
+
 # convert the spike list to a matrix, probably not necessary anymore
 # but just to be consistent with matlab for now
 .NB.prepare <- function(S) {
@@ -19,13 +49,20 @@
 }
 
 #generate binned data for the well
-.NB.select.and.bin <- function(data, well,sbegin,send,bin) {
+.NB.select.and.bin <- function(data, well,sbegin,send,bin ) {
   well.data <- data[,grep(well,colnames(data))]
   well.data[well.data<sbegin | well.data>send] <- 0
   if (is.null(dim(well.data))) {
     dim(well.data) <- c(length(well.data),1) 
   }
-  well.data <- well.data[rowSums(well.data)>0,]
+  if (length(well.data)>0){
+    to.add.back<-min(well.data[well.data>0])
+  } else{
+    to.add.back<-0
+  }
+  
+  
+  well.data <- well.data[rowSums(well.data)>0,] 
   well.data <- round(well.data * 12500)
   temp <- well.data[well.data>0]
   if (length(temp)>0) {
@@ -53,7 +90,8 @@
   } else {
     well.data.new <- temp
   }
-  well.data.new
+ 
+  list(well.data.new, to.add.back)
 }
 
 .NB.Gaussian.Filter <- function(sigma, well.data, min_electrodes) {
@@ -73,17 +111,12 @@
       for (i in 1:dim(f)[2]) {
         if (max(well.data[,i]) > 0) {
           f[,i] <- filter(well.data[,i],gaussFilter,circular = TRUE)
-          #temp <- filter(well.data[,i],gaussFilter,circular = TRUE)
-          #f[,i] <- temp[(half_size+1):(length(temp) - half_size)]
-          
           f[,i] <- f[,i] / max(f[,i])
         }
       }
       f1 <- rowSums(f)
       f1 <- f1/max(f1)
       f2 <- filter(f1,gaussFilter,circular = TRUE)
-      #f2 <-conv(gaussFilter,f1)
-      #f2 <- f2[(half_size+1):(length(f2) - half_size)]
       f2 <- f2/ max(f2)
       dim(f2) <- c(length(f2),1)
       colnames(f2) <- sigma.input
@@ -107,26 +140,29 @@
   stat
 }
 
-.NB.Get.Burst.Stats.Intensities <- function(well.data,f,timespan,bin.time,min_electrodes) {
+.NB.Get.Burst.Stats.Intensities <- function(well.data,f,timespan,bin.time,min_electrodes, 
+                                            sbegin, send, offset2=0, binSize=0.002) {
+  # binSize is set to 0.002 based on sample rate of 12500/s 
   n <- length(f)
-  stat <- matrix(-1,11,n)
-  rownames(stat) <- c("mean.network.burst.time.per.second",
-                      "number.of.spikes.in.network.bursts",
-                      "percentage.of.spikes.in.network.bursts",
+  stat <- matrix(NA,11,n)
+  rownames(stat) <- c("mean.NB.time.per.sec",
+                      "total.spikes.in.all.NBs",
+                      "percent.of.spikes.in.NBs",
                       "spike.intensity",
-                      "spike.intensity.by.electrodes",
-                      "number.of.spikes.in.network.bursts",
-                      "number.of.spikes.per.network.burst",
-                      "mean.spikes.per.active.electrode.in.network.burest",
-                      "mean.spikes.per.active.electrode.in.network.burest.per.second",
-                      "mean.spikes.per.well.in.network.burest",
-                      "total.number.of.network.bursts")
+                      "spike.intensity.by.aEs",
+                      "total.spikes.in.all.NBs,nNB",
+                      "[total.spikes.in.all.NBs,nNB],nAE",
+                      "mean[spikes.in.NB,nAE]",
+                      "mean[spikes.in.NB,nAE,NB.duration]",
+                      "mean[spikes.in.NB]",
+                      "total.number.of.NBs")
   colnames(stat) <- rep("NA",n)
   for (current in 1:n) {
     if (length(f[[current]] > 0)) { #not all have names
       colnames(stat)[current] <- colnames(f[[current]]) # not all have names 
     } 
   }
+  nbTimes<-list(); length(nbTimes)<-length(f); names(nbTimes)<-names(f);
   
   for (current  in 1:n) {
     temp = f[[current]]
@@ -161,6 +197,12 @@
       if (length(burst_start) != length(burst_end)) {
         stop('Burst region no match')
       }
+
+      
+      nbTimesTemp<-cbind.data.frame(burst_start, burst_end)
+      nbTimesTemp$startT=burst_start*0.002 + offset2
+      nbTimesTemp$endT=burst_end*0.002 + offset2
+      nbTimes[[current]]<-nbTimesTemp
       
       stat[1,current] <- sum(indicator0) * bin.time / timespan #mean network burst time per second
       totalspikes <- rowSums(well.data)
@@ -188,42 +230,54 @@
       stat[10,current] = stat[8,current]*nActiveElectrodes
       stat[11,current] = length(burst_start)
     }
-  }  
-  stat
+  } 
+  list( stat, nbTimes)  
 }
-
 #do not change bin and sf for MEA recordings, skip is in seconds
-.NB.Extract.Fetures <- function(S, Sigma, min_electrodes, local_region_min_nAE,duration = 0, bin = 25,sf = 12500,skip = 10) {
+.NB.Extract.Features <- function(S, Sigma, min_electrodes, local_region_min_nAE,duration = 0, bin = 25,sf = 12500,skip = 10) {
   df.spikes <- .NB.prepare(S)
   wells <- unique(substr(colnames(df.spikes),1,2))
   output <- list()
-  #time interval
-  #skip <- 10 #10 seconds
+
   sbegin <- floor(min(df.spikes[df.spikes>0]/skip))* skip + skip
   send <- floor(max(df.spikes[df.spikes>0]/skip))* skip
   timespan <- send - sbegin
   #bin = 25; #2ms, this is a parameter based on our recording
   bin.time <- bin / sf
-  
+  nb.times<-list(); length(nb.times)=length(wells); names(nb.times)<-wells
+  cat( paste0("calculating network bursts for recording ",basename(S$file),"\n") )
   for (well.index in 1: length(wells)) {
-    #print(well.index)  
     well <- wells[well.index]
-    well.data <- .NB.select.and.bin(df.spikes, well,sbegin,send,bin)	 
+    
+    offset<-S$rec.time[1]
+    temp.return<-.NB.select.and.bin(df.spikes, well,sbegin,send,bin)
+    offset2<-temp.return[[2]]
+    well.data <- temp.return[[1]]	
     f <- list()
     for (i  in 1: length(Sigma)) {
       f[[i]] <- .NB.Gaussian.Filter(Sigma[i], well.data, min_electrodes)
+      
     }
-    stat0 <- .NB.Get.Spike.Stats(well.data,timespan)	
-    stat1 <-.NB.Get.Burst.Stats.Intensities(well.data,f,timespan,bin.time,local_region_min_nAE)
+    names(f)<-Sigma
     
+    stat0 <- .NB.Get.Spike.Stats(well.data,timespan)	
+    res1<-.NB.Get.Burst.Stats.Intensities(well.data,f,timespan,bin.time,local_region_min_nAE, 
+                                          sbegin, send, offset2)
+    stat1<-res1[[1]]
+    nb.times[[well.index]]<-res1[[2]]
+
     output[[well.index]] <- list()
     output[[well.index]]$stat0 <- stat0
     output[[well.index]]$stat1 <- stat1
     output[[well.index]]$well <- well
     
+    
   }
-  result <- list(data = output, DIV = unlist(strsplit(unlist(strsplit(basename(S$file),"_"))[4],"[.]"))[1])
-  result
+  
+  list(data = output, 
+       DIV = unlist(strsplit(unlist(strsplit(basename(S$file),"_"))[4],"[.]"))[1],
+       nb.times=nb.times)
+  
 }
 
 .NB.Merge.Result <- function(s,result,Sigma) {
@@ -257,18 +311,23 @@
   
   df = data.frame(DIVs, Wells, Phenotypes,Data)
   names(df)[4:dim(df)[2]] <- feature.names
-  
-  #sort by DIVs
+
   divs <- sapply(df["DIVs"], as.character)
   df <- df[mixedorder(divs),] 
   
-  df
+  result <- list() #return the result as matrix and un-altered feature names
+  result$df <- df
+  result$feature.names <- feature.names
+  
+  result
 }
 
-NB.matrix.to.feature.dfs <- function(data) {
-  n.features = dim(data)[2] - 3 #escape the first columns
+NB.matrix.to.feature.dfs <- function(Matrix_and_feature_names) {
+  data <- Matrix_and_feature_names$df
+  feature.names <- Matrix_and_feature_names$feature.names
+  data <- data.frame(lapply(data, as.character), stringsAsFactors=FALSE)
+  n.features <- dim(data)[2] - 3 #escape the first columns
   dfs <- list()
-  data[,'Wells'] <- factor(data[,'Wells']) #drop unused levels
   Well.stat <- table(data[,'Wells'])
   
   ref.matrix <- matrix(NA,length(Well.stat), length(unique(data[,1]) ) )
@@ -285,8 +344,10 @@ NB.matrix.to.feature.dfs <- function(data) {
       data.matrix[data[i,'Wells'],data[i,'DIVs']] <- data[i,index + 3]
     }
     dfs[[index]] <- .sort.df(cbind(Wells,data.matrix))
+    dfs[[index]][] <- lapply(dfs[[index]], as.character) #[] keep it as a data.frame
   }
-  names(dfs) <- colnames(data)[4:(n.features+3)]
+  #names(dfs) <- colnames(data)[4:(n.features+3)]
+  names(dfs) <- feature.names
   dfs
 }
 
@@ -302,7 +363,7 @@ NB.matrix.to.feature.dfs <- function(data) {
   d <- data[(data[,'Phenotypes']==g1) | (data[,'Phenotypes']==g2),c(2,feature.index)]
   d[,'Wells'] <- factor(d[,'Wells']) #drop unused levels
   Well.stat <- table(d[,'Wells'])
-  data.matrix <- matrix(-1,length(Well.stat),max(Well.stat))
+  data.matrix <- matrix(NA,length(Well.stat),max(Well.stat))
   rownames(data.matrix) <- names(Well.stat)
   n.cases <- length(unique(data[data[,'Phenotypes']==g1,'Wells']))
   n <- dim(data.matrix)[1]
@@ -323,19 +384,29 @@ NB.matrix.to.feature.dfs <- function(data) {
   outp = sort(outp)
   
   perm.p <- length(which(outp<data.p)) / np
-  result <- list(perm.p = perm.p, outp = outp)
-  result
+  list(perm.p = perm.p, outp = outp)
+  
 }
+
 
 calculate.network.bursts <- function(s,Sigma,min_electrodes,local_region_min_nAE) {
   # extract features and merge features from different recordings into one data frame
-  R <- NULL
+  nb.structure<-list()
+  nb.structure$summary<-list()
+  nb.structure$nb.all<-list()
+  nb.structure$nb.features<-list()
   if (length(s)>0) {
-    result <- list()
+    featuresExtracted.AllDIV<-list()
+    nb.all<-list()
     for (i in 1:length(s)) {
-      result[[i]] <- .NB.Extract.Fetures(s[[i]], Sigma, min_electrodes, local_region_min_nAE) 
+      featuresExtracted.AllDIV[[i]]<-.NB.Extract.Features(s[[i]], Sigma, min_electrodes, local_region_min_nAE) 
+      featuresExtracted.OneDIV<-list(); featuresExtracted.OneDIV[[1]]<-featuresExtracted.AllDIV[[i]]
+      nb.structure$nb.all[[i]]<-featuresExtracted.AllDIV[[i]]$nb.times
+      nb.structure$result[[i]]<-featuresExtracted.AllDIV[[i]]
+      nb.structure$nb.features[[i]] <- .NB.Merge.Result(s, featuresExtracted.OneDIV , Sigma )
+      
     }
-    R <- .NB.Merge.Result(s,result,Sigma)
+    nb.structure$nb.features.merged <- .NB.Merge.Result(s,nb.structure$result,Sigma)
   }
-  R
+  nb.structure
 }

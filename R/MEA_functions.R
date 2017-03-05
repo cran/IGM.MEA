@@ -31,21 +31,14 @@ remove.spikes <- function(s, ids) {
   	corr.breaks <- 0         #TODO: hardcoded for axion!
   	layout <- s$layout
   	filename <- s$file#paste0(s$file, ".edited")
-  	s2 <- construct.s(s$spikes, ids, s$rates$time.interval, beg, end,
+  	s2 <- .construct.s(s$spikes, ids, s$rates$time.interval, beg, end,
                     corr.breaks, layout, filename)
   	s2
 }
 
-################THIS FUNCTION NEEDS EDITING TO PASS BACK WELL INFO#####
-#this function runs through spikes, cutting out
-#bad wells and bad electrodes, it also adds the well data
-
 #this function returns a list with the chemical names for corresponding
 #date, plate number and wells found in "file"
-chem.info.2<-function(file,masterChemFile=masterChemFile) {
-  	#get chemical info
-  	#*********load chemical list*************
-  	# read in masterChemFile
+get.experimental.log.file<-function(file,masterChemFile=masterChemFile) {
   	masterChem=read.csv(masterChemFile)
   	masterCD<-as.data.frame(masterChem)
   	#remove extraneous NA columns
@@ -121,7 +114,7 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
     
   	}
   
-  	s$active.wells<-axion.elec2well(s$channels)
+  	s$active.wells<-.axion.elec2well(s$channels)
   
   
   	if (length(strsplit(resp,"$",fixed=TRUE)[[1]])>1 ){
@@ -145,7 +138,7 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
   
   	print( p)
   	p
-}#end of .channel.plot.by.well  
+}  
 
 #********average and sum burst variables across each well
 #input: s is a list containing burst info, and meta data
@@ -197,22 +190,22 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
         			sum$bursts.per.min[j]<-sum$bursts.per.sec[j]*60
         
         			#finds the mean of duration for a particular well (across all channels)
-        			#burstinfo(allb[icurrentwell],"durn") takes out the column "durn" of all
+        			#get.burst.info(allb[icurrentwell],"durn") takes out the column "durn" of all
         			#matricies allb among the indicator set icurrentwell
         			#get duration data across all channels of current well
-        			sum$mean.dur[j]<-mean(unlist(burstinfo(allb[icurrentwell],"durn")),na.rm=TRUE)
+        			sum$mean.dur[j]<-mean(unlist(get.burst.info(allb[icurrentwell],"durn")),na.rm=TRUE)
         
         			#sd of current well burst durations
-        			sum$sd.dur[j]<-sd(unlist(burstinfo(allb[icurrentwell],"durn")))
+        			sum$sd.dur[j]<-sd(unlist(get.burst.info(allb[icurrentwell],"durn")))
         
         			#mean frequency within a burst
         			sum$mean.freq.in.burst[j]<-
-          				mean(unlist(burstinfo(allb[incurrentwell],"len"))/
-                 			unlist(burstinfo(allb[incurrentwell],"durn")), na.rm=TRUE)
+          				mean(unlist(get.burst.info(allb[incurrentwell],"len"))/
+                 			unlist(get.burst.info(allb[incurrentwell],"durn")), na.rm=TRUE)
         
         			#sd frequency within a burst
-        			sum$sd.freq.in.burst[j]<-sd(unlist(burstinfo(allb[incurrentwell],"len"))/
-                                      unlist(burstinfo(allb[incurrentwell],"durn")),na.rm=TRUE)
+        			sum$sd.freq.in.burst[j]<-sd(unlist(get.burst.info(allb[incurrentwell],"len"))/
+                                      unlist(get.burst.info(allb[incurrentwell],"durn")),na.rm=TRUE)
         
         			#mean of ISI across all channels in current well
         			sum$mean.ISIs[j] = mean(unlist(ISIs[incurrentwell]), na.rm=TRUE)
@@ -222,7 +215,7 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
         
         			#len=#spikes in burst (length of burst in bursts)
         			#mean.spikes.in.burst
-        			ns<-unlist(burstinfo(allb[icurrentwell],"len"))   
+        			ns<-unlist(get.burst.info(allb[icurrentwell],"len"))   
         			sum$mean.spikes.in.burst[j] <- round(mean(ns,na.rm=TRUE), 3)
         
         			#sd of spikes in burst
@@ -265,9 +258,9 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
         			sum$sd.IBIs[j]<-NA
         			sum$cv.IBIs[j]<-NA
 
-      		}# end of if/else for channels that dropped off
+      		}
       
-    		}#end of loop through goodwells
+    		}
     
     		###Set all names
     		for (k in 1:length(names(sum))){
@@ -289,7 +282,7 @@ chem.info.2<-function(file,masterChemFile=masterChemFile) {
     		masterSum[[i]]$end.rec.time<-rep( s[[i]]$rec.time[2],length(s[[i]]$goodwells) )
     		masterSum[[i]]$goodwells<-s[[i]]$goodwells
     
-  	}#end of for loop through sum/averaging burst variables
+  	}
   
   	masterSum
-}#end of get.burst.info
+}

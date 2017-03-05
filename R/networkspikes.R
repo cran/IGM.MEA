@@ -6,12 +6,6 @@
 
 
 
-##ns.T = 0.003                             #bin time for network spikes
-##ns.N = 10                               #number of active electrodes.
-
-## 2007-07-27: Code merged in from second version, temp in
-## ~/proj/sangermea/test_ns.R 
-
 ##' Compute network spikes
 ##' 
 ##' Compute the network spikes in an MEA recording, by averaging over all the
@@ -23,7 +17,7 @@
 ##' If you wish to see the individual network spikes, try .show.ns(ns, ...)
 ##' where the remaining args are passed to the plot function.
 ##' 
-##' @aliases .compute.ns .show.ns
+##' @aliases .compute.ns 
 ##' @param s MEA data structure
 ##' @param ns.T Bin width (in seconds) for counting spikes.
 ##' @param ns.N Threshold number of active electrodes required to make network
@@ -45,31 +39,11 @@
 ##' and sd of the peak height; durn.m, durn.sd: mean and sd of the duration of
 ##' the network spike.}
 ##' @author Stephen Eglen
-##' @seealso \code{\link{sanger.read.spikes}}
 ##' @references Eytan and Marom (2006) J Neuroscience.
 ##' @keywords Network spikes, MEA analysis
-##' @examples
-##' 
-##' data.file <- system.file("examples", "TC89_DIV15_A.nexTimestamps",
-##'                          package = "IGM.MEA")
-##' s <- sanger.read.spikes( data.file, beg=400, end=700)
-##' s$ns <- .compute.ns(s, ns.T=0.003, ns.N=10,sur=100)
-##' plot(s$ns, ylab='Count', xlab='Time (s)')
-##' plot(s$ns, xlim=c(450, 500),
-##'      xlab='Time (s)', ylab='Count')
-##' 
-##' plot(s$ns$mean, xlab='Time (s)', ylab='Count', main='Mean NS')
-##' summary(s$ns)
-##' s$ns$brief
-##' ## .show.ns(s$ns)  # This shows each network spike!  Can take a long time.
 ##' 
 .compute.ns <- function(s, ns.T, ns.N, sur=100, whichcells=NULL,
                        plot=FALSE) {
-  ## Main entrance function to compute network spikes.
-  ## Typical values:
-  ## ns.T: 0.003 (time in seconds)
-  ## ns.N: 10
-  ## sur: 100
 
   indexes = .names.to.indexes(names(s$spikes), whichcells, allow.na=TRUE)
   if (length(indexes)==0) {
@@ -138,7 +112,7 @@
   res
 }
 
-IGM.plot.ns <- function(ns, ...) {
+IGM.plot.network.spikes <- function(ns, ...) {
   ## Plot function for "ns" class.
   plot(ns$counts, ...)
   abline(h=ns$ns.N, col='red')
@@ -276,18 +250,6 @@ IGM.plot.ns <- function(ns, ...) {
   list(measures=measures, ns.mean=ns.mean)
 }
 
-.show.ns <- function(ns, ...) {
-  ## Show the individual network spikes after they have been computed.
-  ##
-  ## This is useful if you don't show the individual network spikes
-  ## when they are first iterated over to calculate the mean.
- 
-  res <- .mean.ns(ns, p=NULL, ...)
-  NULL                                  #ignore result
-}
-
-
-
 
 .find.peaks <- function(trace, ns.N) {
 
@@ -349,29 +311,6 @@ IGM.plot.ns <- function(ns, ...) {
     peaks = NULL
   }
 }
-
-
-
-
-.find.halfmax.cute <- function(y) {
-  ## Given a peak within DAT, find the FWHM.
-  ## This is a cute method, but not robust enough -- since it assumes
-  ## that the peak is unimodel -- which may not be the case.
-  
-
-  x = 1:length(y)
-  p.t = 101                             #HACK!!!
-  half.max = y[p.t]/2                   #HACK!!!
-  f <- approxfun(x, y)
-  f2 <- function(x) { f(x) - half.max }
-  l <- uniroot(f2, lower=1, upper=p.t)
-  r <- uniroot(f2, lower=p.t, upper=length(y))
-
-  segments(l$root, f(l$root), r$root, f(r$root), col='blue')
-
-}
-
-
 
 .find.halfmax <- function(y, peak.n=NULL, plot=TRUE, frac=0.5) {
 
@@ -464,115 +403,3 @@ IGM.plot.ns <- function(ns, ...) {
 
   list(xl=xl.half, xr=xr.half, durn=xr.half-xl.half)
 }
-
-## now interpolate -- hard way
-## a <- approx(x, y, n=length(y)*30)
-## lines(a)
-
-## amax.x = which.max(a$y)
-## points(a$x[amax.x], a$y[amax.x], col='blue', pch=19)
-
-## ## find right side down.
-## half.max = max(y)/2
-## rx <- which(a$y[-(1:amax.x)]< half.max)[1] + amax.x
-
-## ## find left side down.
-## lx <- which(a$y[1:amax.x]< half.max)
-## lx <- lx[length(lx)]
-## segments(a$x[lx], a$y[lx],  a$x[rx], a$y[rx], col='blue')
-
-## The "R" way of interpolating -- nice!
-
-
-.check.ns.plot <- function(counts, p, xlim, ns.N) {
-
-  plot(counts$times, counts$sum, type='l', xlim=xlim,
-       xlab="time (s)", ylab='num active channels')
-  points(counts$times[p[,1]], p[,2], pch=19, col='blue')
-  abline(h=ns.N, col='red')               #threshold line.
-}
-
-.ns.bin.peak <- function(p, nbins=12, wid=5) {
-  ## Bin values in P into a set of NBINS bins, of size WID.
-  ## Bins are right-closed (except for first bin, closed at both ends).
-  ## Labels are added onto the bins.
-  ##
-  ## x <- c(0, 4,5, 20, 54,55, 60)
-  ## .ns.bin.peak(x, wid=10, nbins=7 )
-  ##
-
-  if ( is.null(p) ) {
-    ## no valid values, so no need to make the histogram.
-    ## This happens when there are no network spikes.
-    p <- 0; invalid <- TRUE
-  } else {
-    invalid <- FALSE
-  }
-  
-  b <- seq(from=0, by=wid, length=nbins+1)
-  max.allowed <- max(b)
-  if ( any( above <- which(p > max.allowed)) ) {
-    stop("some values above max.allowed")
-  }
-  h <- hist(p, plot=FALSE, breaks=b)
-  c <- h$counts
-
-  if (invalid) {
-    ## no valid counts, so set all counts to zero.
-    c <- c*0
-  }
-  
-  l <- .hist.make.labels(0, max.allowed, nbins)
-  names(c) <- l
-  c
-}
-
-
-
-.ns.identity <- function(s, w=0.1) {
-  ## Return the "NSID" matrix, Network Spike IDentity.
-  ## Which channels contributed to which network spikes?
-  ## W is window of spike identity, +/- 0.1s by default.
-
-  ## peak.times here should be the middle of the NS bin.
-  peak.times <- s$ns$measures[,"time"] + (s$ns$ns.T/2)
-
-  ## We do the transpose here so that one row is one network spike.
-  nsid <- t(.ns.coincident(peak.times, s$spikes, w))
-
-  
-}
-
-.ns.coincident <- function(a, bs, w) {
-  ## A is a vector of reference times, sorted, lowest first.  (Here
-  ## the times of the peaks of the network spikes.)
-  ## B is a list of vectors of spike times.  (Each vector of spike
-  ## times is sorted, lowest first.)
-
-  ## For each spike train in B, we see if there was a spike within a
-  ## time window +/- W of the time of each event in A.  If there was a
-  ## "close" spike in spike train j from B to event i , then
-  ## MAT[j,i]=1.
-  ## (MAT is a matrix of size CxN, where C is the number of spike
-  ## trains in BS, and N is the number of events in A.)
-  ## MAT is transposed by the higher level function -- it is kept this
-  ## way for ease of the C implementation.
-  spike.lens <- sapply(bs, length)
-  num.channels <- length(spike.lens)
-  z <- .C("coincident_arr",
-          as.double(a), as.integer(length(a)),
-          as.double(unlist(bs)), as.integer(spike.lens),
-          as.integer(num.channels),
-          close = integer(length(a)*num.channels),
-          as.double(w))
-  
-  mat <- matrix(z$close, nrow=num.channels, byrow=TRUE)
-  dimnames(mat) <- list(channel=1:num.channels, ns.peak=a)
-  mat
-
-}
-
-######################################################################
-## End of functions
-######################################################################
-

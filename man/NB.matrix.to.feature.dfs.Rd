@@ -8,11 +8,11 @@ Convert network burst data matrix to a list of data frames.
 Convert network burst data matrix to a list of dataframes. Each dataframe has rows representing wells while columns representing different timepoints(DIVs). The dataframe format alllows well level permutaiton based tests to be done much easier. 
 }
 \usage{
-NB.matrix.to.feature.dfs(data)
+NB.matrix.to.feature.dfs(Matrix_and_feature_names)
 }
 
 \arguments{
-  \item{data}{ The data matrix return by calling function calculate.network.bursts.
+  \item{Matrix_and_feature_names}{ The data matrix return by calling function calculate.network.bursts.
 }
 }
 

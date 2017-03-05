@@ -16,7 +16,7 @@ well.filter.maximum.DIV.inactive.ratio=0.5,
 #parameters for max-interval burst detection
 mi.par = list(beg.isi =    0.1,
                end.isi =    0.25,
-               min.ibi =    0.8,
+               min.ibi =    0.3,
                min.durn =   0.05,
                min.spikes = 5),
 
@@ -88,7 +88,9 @@ burst.distribution.spikeFreq = list(
   #network burst parameters
   local_region_min_nAE= 0, #do not change for now
   min_electrodes= 4 ,
-  Sigma= c(10,20,50) # a list of window size to be considered 
+  Sigma= c(10,20,50) , # a list of window size to be considered 
+
+  timeStamp="DATE_TIME" # system time 
 
 ) # end of parameters list
 

@@ -4,7 +4,7 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		burstPlotPath = paste(outputdir,"/",basename,"_burst_plot.pdf",sep="")
 		pdf(file=burstPlotPath) 
 		#layout 
-  		p<-.plot.mealayout.1(s[[i]]$layout, use.names=T, cex=0.25)
+  		p<-.plot.mealayout(s[[i]]$layout, use.names=T, cex=0.25)
   		title(main= paste( paste("Electrode Layout"), 
                      paste("file= ",  strsplit( basename(s[[i]]$file),".RData")[[1]][1], sep=""),                             
                      sep='\n'))
@@ -16,7 +16,7 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  
 		  feature="IBI"; print ("Running IBI distribution analysis.")
 		  params=parameters$burst.distribution.IBI
-		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
+		  p<-calc.burst.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
 		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
 		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
 		
@@ -25,7 +25,7 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  
 		  feature="ISI"; print ("Running ISI distribution analysis.")
 		  params=parameters$burst.distribution.ISI
-		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
+		  p<-calc.burst.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
 		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
 		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
 		
@@ -34,7 +34,7 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  
 		  feature="nspikesInBurst"; print ("Running nSpikes in bursts distribution analysis.")
 		  params=parameters$burst.distribution.nSpikes
-		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
+		  p<-calc.burst.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
 		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
 		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
   		
@@ -43,7 +43,7 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  
 		  feature="duration"; print ("Running duration of bursts distribution analysis.")
 		  params=parameters$burst.distribution.durn
-		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
+		  p<-calc.burst.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
 		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
 		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
 		
@@ -52,7 +52,7 @@ IGM.plot.plate.summary.for.bursts<-function(s,outputdir,parameters) {
 		  
 		  feature="spikesDensityInBurst"; print ("Running spike density in bursts distribution analysis.")
 		  params=parameters$burst.distribution.spikeFreq
-		  p<-IGM.plot.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
+		  p<-calc.burst.distributions(s[[i]],minVals=params$min.cases,xlimit=params$x.lim,binsInSec=params$bins.in.seg,feature=feature,
 		                        filterValuesByMin=params$filter.by.min,minValues=params$min.values,perWell=params$per.well,outputdir=outputdir,
 		                        min.electrodes=parameters$well.min.rate,parameters$timeStamp)}
 		
@@ -171,3 +171,4 @@ write.plate.summary.for.bursts<-function(s,outputdir) {
   		write.table(" ",csvfile, sep=",", append=TRUE,row.names=FALSE,col.names=FALSE)
 	}#end of loop through writting tables
 }
+

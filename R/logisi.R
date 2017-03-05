@@ -3,7 +3,7 @@
 ## Copyright: GPL.
 
 .logisi.find.burst <- function(spikes, debug=FALSE) {
-
+  
   ## For one spike train, find the burst using log isi method.
   ## e.g.
   ## .find.bursts(s$spikes[[5]])

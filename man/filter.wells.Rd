@@ -30,7 +30,7 @@ well.filter.maximum.DIV.inactive.ratio = 0.5)
 	#data("S")
 	#data("parameters")
 	#s<-list(); s[[1]]<-S
-	# spike.features<-IGM.aggregate.feature.data(s, feat.type="spike", parameters )
+	# spike.features<-IGM.aggregate.features(s, feat.type="spike", parameters )
 	# nae = spike.features$nAE
   # filtered.spike.features = lapply(spike.features, function(x) filter.wells(x, nae))
 }

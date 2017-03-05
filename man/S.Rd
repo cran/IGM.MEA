@@ -27,7 +27,7 @@ An example 'S' list object containing multiple fields describing 1 minute record
     \item{well}{well names}
     \item{nAE}{# active electrodes (firing>5spikes/min)}
     \item{cw}{wells that each channel belongs to }
-    \item{parameters}{ a list of parameters needed for analysis}
+    \item{parameters}{ A list of parameters, see data("parameters") }
     \item{allb}{for each electrode, a matrix of burst related information }
     \item{bs}{burst summary, a data frame containing burst endpoints by electrode}
     \item{ns.all}{for each well, a list of network spike information}
